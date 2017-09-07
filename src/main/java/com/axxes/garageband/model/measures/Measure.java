@@ -19,7 +19,7 @@ public class Measure {
         this.beats[location] = beat;
     }
 
-    public void play() {
+    public void playMeasure() {
         this.beats[currentBeat].playBeat();
 
         if (this.currentBeat == beatsPerMeasure) {
@@ -29,4 +29,7 @@ public class Measure {
         }
     }
 
+    public Boolean getEndOfMeasure(){
+        return currentBeat == (beatsPerMeasure - 1);
+    }
 }
