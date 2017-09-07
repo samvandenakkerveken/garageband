@@ -1,10 +1,10 @@
 package com.axxes.garageband.model.instrument;
 
-public class HiHat implements Instrument {
+public class Kick implements Instrument {
 
     private String soundResource;
 
-    public HiHat(String soundResource){
+    public Kick(String soundResource){
         this.soundResource = soundResource;
     }
 
