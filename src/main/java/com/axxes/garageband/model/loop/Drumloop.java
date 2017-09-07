@@ -25,9 +25,10 @@ public class Drumloop implements Loop {
         Measure measure = this.measures[currentMeasure];
 
         if (measure.getEndOfMeasure()){
-            currentMeasure++;
-            if (currentMeasure == numberOfMeasures){
+            if (currentMeasure == (numberOfMeasures - 1)) {
                 currentMeasure = 0;
+            } else {
+                currentMeasure++;
             }
         }
         measure.playMeasure();
