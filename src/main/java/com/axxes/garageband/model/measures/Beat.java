@@ -29,4 +29,7 @@ public class Beat {
         }
     }
 
+    public List<Instrument> getInstruments() {
+        return instruments;
+    }
 }

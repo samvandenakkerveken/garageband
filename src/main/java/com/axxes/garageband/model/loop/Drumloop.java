@@ -42,6 +42,10 @@ public class Drumloop implements Loop {
         measure.playMeasure();
     }
 
+    public Measure[] getMeasures() {
+        return this.measures;
+    }
+
     public void setMeasures(Measure[] measures) {
         this.measures = measures;
     }

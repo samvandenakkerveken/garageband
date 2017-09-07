@@ -39,4 +39,8 @@ public class Measure {
         return currentBeat == (beatsPerMeasure - 1);
     }
 
+    public Beat[] getBeats() {
+        return this.beats;
+    }
+
 }

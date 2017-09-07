@@ -1,7 +1,6 @@
 package com.axxes.garageband.loop;
 
-import com.axxes.garageband.model.instrument.Instrument;
-import com.axxes.garageband.model.instrument.Snare;
+import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
@@ -24,9 +23,9 @@ public class GaragebandLoopTest {
     @Before
     public void setup() {
         Instrument snare = new Snare("snare.wav");
-        Instrument kick = new Snare("kick.wav");
-        Instrument hihat = new Snare("hihat.wav");
-        Instrument cymbal = new Snare("cymbal.wav");
+        Instrument kick = new Kick("kick.wav");
+        Instrument hihat = new HiHat("hihat.wav");
+        Instrument cymbal = new Cymbal("cymbal.wav");
 
         Beat beat1 = new Beat();
         Beat beat2 = new Beat();

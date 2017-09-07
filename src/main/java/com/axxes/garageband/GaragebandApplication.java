@@ -1,5 +1,10 @@
 package com.axxes.garageband;
 
+import com.axxes.garageband.model.instrument.Instrument;
+import com.axxes.garageband.model.instrument.Snare;
+import com.axxes.garageband.model.loop.Drumloop;
+import com.axxes.garageband.model.measures.Beat;
+import com.axxes.garageband.model.measures.Measure;
 import com.axxes.garageband.presenter.Presenter;
 import com.axxes.garageband.view.GarbageBandUI;
 import javafx.application.Application;
@@ -33,9 +38,9 @@ public class GaragebandApplication extends Application {
         primaryStage.show();
 
         /*Instrument snare = new Snare("snare.wav");
-        Instrument kick = new Snare("kick.wav");
-        Instrument hihat = new Snare("hihat.wav");
-        Instrument cymbal = new Snare("cymbal.wav");
+        Instrument kick = new Kick("kick.wav");
+        Instrument hihat = new HiHat("hihat.wav");
+        Instrument cymbal = new Cymbal("cymbal.wav");
 
         Beat beat1 = new Beat();
         Beat beat2 = new Beat();
@@ -78,5 +83,6 @@ public class GaragebandApplication extends Application {
         drumloop.setMeasures(new Measure[] {measure1, measure2});
 
         context.getBean(Presenter.class).startLoop(180, drumloop);*/
+
     }
 }
