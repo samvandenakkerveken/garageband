@@ -22,6 +22,7 @@ public class Beat {
     }
 
     public void playBeat() {
+        //AccesLogger.getInstance().info("Beat: Playing instrument");
         for (Instrument i : instruments) {
             i.play();
         }

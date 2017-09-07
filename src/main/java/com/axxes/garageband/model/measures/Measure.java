@@ -13,6 +13,10 @@ public class Measure {
         this.beatsPerMeasure = 4;
         this.beats = new Beat[beatsPerMeasure];
         this.currentBeat = 0;
+
+        for (int i = 0; i < beatsPerMeasure; i++) {
+            this.beats[i] = new Beat();
+        }
     }
 
     public void addBeatOnLocation(Beat beat, int location) {
@@ -20,6 +24,7 @@ public class Measure {
     }
 
     public void playMeasure() {
+        //AccesLogger.getInstance().info("Measure: playing beat: " + currentBeat + ".");
         this.beats[currentBeat].playBeat();
 
         if (this.currentBeat == (beatsPerMeasure - 1)) {
@@ -32,4 +37,5 @@ public class Measure {
     public Boolean isEndOfMeasure(){
         return currentBeat == (beatsPerMeasure - 1);
     }
+
 }
