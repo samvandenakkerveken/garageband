@@ -24,7 +24,7 @@ public class Drumloop implements Loop {
     public void step() {
         Measure measure = this.measures[currentMeasure];
 
-        if (measure.getEndOfMeasure()){
+        if (measure.isEndOfMeasure()){
             currentMeasure++;
             if (currentMeasure == numberOfMeasures){
                 currentMeasure = 0;

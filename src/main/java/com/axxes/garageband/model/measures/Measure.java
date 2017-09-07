@@ -22,14 +22,14 @@ public class Measure {
     public void playMeasure() {
         this.beats[currentBeat].playBeat();
 
-        if (this.currentBeat == beatsPerMeasure) {
+        if (this.currentBeat == (beatsPerMeasure - 1)) {
             this.currentBeat = 0;
         } else {
             this.currentBeat++;
         }
     }
 
-    public Boolean getEndOfMeasure(){
+    public Boolean isEndOfMeasure(){
         return currentBeat == (beatsPerMeasure - 1);
     }
 }
