@@ -6,7 +6,6 @@ import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
 import com.axxes.garageband.presenter.Presenter;
-import kuusisto.tinysound.TinySound;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
