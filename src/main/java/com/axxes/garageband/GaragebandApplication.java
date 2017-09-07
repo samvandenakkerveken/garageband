@@ -1,12 +1,11 @@
 package com.axxes.garageband;
 
-import com.axxes.garageband.model.instrument.Instrument;
-import com.axxes.garageband.model.instrument.Snare;
-import com.axxes.garageband.model.loop.Drumloop;
-import com.axxes.garageband.model.measures.Beat;
-import com.axxes.garageband.model.measures.Measure;
 import com.axxes.garageband.presenter.Presenter;
+import com.axxes.garageband.view.GarbageBandUI;
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 import kuusisto.tinysound.TinySound;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +24,15 @@ public class GaragebandApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         ConfigurableApplicationContext context = SpringApplication.run(GaragebandApplication.class);
 
-        Instrument snare = new Snare("snare.wav");
+        final GarbageBandUI garbageBandUI = context.getBean(GarbageBandUI.class);
+        final Presenter presenter = context.getBean(Presenter.class);
+
+        Parent root = FXMLLoader.load(getClass().getResource("/ui/garbageband.fxml"));
+
+        primaryStage.setScene(new Scene(root));
+        primaryStage.show();
+
+        /*Instrument snare = new Snare("snare.wav");
         Instrument kick = new Snare("kick.wav");
         Instrument hihat = new Snare("hihat.wav");
         Instrument cymbal = new Snare("cymbal.wav");
@@ -70,6 +77,6 @@ public class GaragebandApplication extends Application {
         Drumloop drumloop = new Drumloop();
         drumloop.setMeasures(new Measure[] {measure1, measure2});
 
-        context.getBean(Presenter.class).startLoop(180, drumloop);
+        context.getBean(Presenter.class).startLoop(180, drumloop);*/
     }
 }
