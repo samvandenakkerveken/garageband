@@ -31,8 +31,8 @@ public class Drumloop implements Loop {
 
         Measure measure = this.measures[currentMeasure];
 
-        if (measure.isEndOfMeasure()){
-            if (currentMeasure == (numberOfMeasures-1)){
+        if (measure.isEndOfMeasure()) {
+            if (currentMeasure == (numberOfMeasures - 1)) {
                 currentMeasure = 0;
             } else {
                 currentMeasure++;
@@ -40,6 +40,7 @@ public class Drumloop implements Loop {
         }
 
         measure.playMeasure();
+    }
 
     public void setMeasures(Measure[] measures) {
         this.measures = measures;

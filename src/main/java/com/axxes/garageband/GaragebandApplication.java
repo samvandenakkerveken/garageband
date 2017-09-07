@@ -17,12 +17,13 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class GaragebandApplication extends Application {
 
     public static void main(String[] args) {
+        TinySound.init();
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        TinySound.init();
+        ConfigurableApplicationContext context = SpringApplication.run(GaragebandApplication.class);
 
         Instrument snare = new Snare("snare.wav");
         Instrument kick = new Snare("kick.wav");
@@ -42,12 +43,16 @@ public class GaragebandApplication extends Application {
         beat2.addInstrument(hihat);
         beat3.addInstrument(hihat);
         beat4.addInstrument(hihat);
+        beat5.addInstrument(hihat);
         beat6.addInstrument(hihat);
         beat7.addInstrument(hihat);
         beat8.addInstrument(hihat);
         beat1.addInstrument(kick);
-        beat5.addInstrument(snare);
-        beat5.addInstrument(cymbal);
+        beat2.addInstrument(kick);
+        beat4.addInstrument(snare);
+        beat5.addInstrument(kick);
+        beat6.addInstrument(kick);
+        beat8.addInstrument(snare);
 
         Measure measure1 = new Measure();
         Measure measure2 = new Measure();
@@ -65,7 +70,6 @@ public class GaragebandApplication extends Application {
         Drumloop drumloop = new Drumloop();
         drumloop.setMeasures(new Measure[] {measure1, measure2});
 
-        ConfigurableApplicationContext context = SpringApplication.run(GaragebandApplication.class);
-        context.getBean(Presenter.class).startLoop(60, drumloop);
+        context.getBean(Presenter.class).startLoop(180, drumloop);
     }
 }
