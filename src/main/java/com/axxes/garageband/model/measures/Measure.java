@@ -43,4 +43,8 @@ public class Measure {
         return this.beats;
     }
 
+    public void setBeats(Beat[] beats) {
+        this.beats = beats;
+    }
+
 }
