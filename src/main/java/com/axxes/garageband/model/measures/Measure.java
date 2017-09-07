@@ -24,7 +24,6 @@ public class Measure {
     }
 
     public void playMeasure() {
-        //AccesLogger.getInstance().info("Measure: playing beat: " + currentBeat + ".");
         this.beats[currentBeat].playBeat();
 
         if (this.currentBeat == (beatsPerMeasure - 1)) {

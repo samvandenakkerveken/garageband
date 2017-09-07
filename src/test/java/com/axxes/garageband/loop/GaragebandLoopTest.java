@@ -1,4 +1,4 @@
-package com.axxes.garageband;
+package com.axxes.garageband.loop;
 
 import com.axxes.garageband.model.instrument.Instrument;
 import com.axxes.garageband.model.instrument.Snare;
@@ -6,24 +6,23 @@ import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
 import com.axxes.garageband.presenter.Presenter;
-import javafx.application.Application;
-import javafx.stage.Stage;
-import kuusisto.tinysound.TinySound;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootApplication
-public class GaragebandApplication extends Application {
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class GaragebandLoopTest {
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    @Autowired
+    private Presenter presenter;
+    private Drumloop drumloop;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        TinySound.init();
-
+    @Before
+    public void setup() {
         Instrument snare = new Snare("snare.wav");
         Instrument kick = new Snare("kick.wav");
         Instrument hihat = new Snare("hihat.wav");
@@ -62,10 +61,13 @@ public class GaragebandApplication extends Application {
         measure2.addBeatOnLocation(beat7, 2);
         measure2.addBeatOnLocation(beat8, 3);
 
-        Drumloop drumloop = new Drumloop();
-        drumloop.setMeasures(new Measure[] {measure1, measure2});
-
-        ConfigurableApplicationContext context = SpringApplication.run(GaragebandApplication.class);
-        context.getBean(Presenter.class).startLoop(60, drumloop);
+        this.drumloop = new Drumloop();
+        this.drumloop.setMeasures(new Measure[] {measure1, measure2});
     }
+
+    @Test
+    public void drumLoopTest() {
+        this.presenter.startLoop(60, this.drumloop);
+    }
+
 }

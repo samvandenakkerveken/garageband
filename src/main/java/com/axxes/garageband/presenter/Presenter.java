@@ -6,7 +6,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,6 +21,20 @@ public class Presenter {
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
                     this.drumloop.step();
+                    // UI handling
+                }));
+        timeline.setCycleCount(Animation.INDEFINITE);
+        timeline.play();
+    }
+
+    public void startLoop(int bpm, Drumloop drumloop) {
+        int timeBetweenBeats = 60000 / bpm;
+
+        Timeline timeline = new Timeline(new KeyFrame(
+                Duration.millis(timeBetweenBeats),
+                ae -> {
+                    Logger.getLogger(Presenter.class).info("Drumloop step.");
+                    drumloop.step();
                     // UI handling
                 }));
         timeline.setCycleCount(Animation.INDEFINITE);

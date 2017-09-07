@@ -17,7 +17,7 @@ public class InstrumentTest {
     @Test
     public void testPlaySound(){
         Boolean played = false;
-        Sound sound = TinySound.loadSound("Kick-01.wav");
+        Sound sound = TinySound.loadSound("kick.wav");
         sound.play();
         played = true;
         assertThat(played).isTrue();

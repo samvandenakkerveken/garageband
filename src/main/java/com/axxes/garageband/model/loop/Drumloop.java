@@ -20,14 +20,7 @@ public class Drumloop implements Loop {
         }
     }
 
-    public void addMeasureOnLocation(Measure measure, int location) {
-        this.measures[location] = measure;
-    }
-
-
     public void step() {
-        //AccesLogger.getInstance().info("Drumloop: Step into measure: " + currentMeasure + ".");
-
         Measure measure = this.measures[currentMeasure];
 
         if (measure.isEndOfMeasure()){
@@ -37,8 +30,12 @@ public class Drumloop implements Loop {
                 currentMeasure++;
             }
         }
-        measure.playMeasure();
 
+        measure.playMeasure();
+    }
+
+    public void setMeasures(Measure[] measures) {
+        this.measures = measures;
     }
 
 }
