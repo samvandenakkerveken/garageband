@@ -20,7 +20,7 @@ public class Measure {
     }
 
     public void play() {
-        this.beats[currentBeat].play();
+        this.beats[currentBeat].playBeat();
 
         if (this.currentBeat == beatsPerMeasure) {
             this.currentBeat = 0;
