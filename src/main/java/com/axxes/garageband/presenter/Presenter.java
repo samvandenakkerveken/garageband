@@ -9,14 +9,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Component
 public class Presenter {
@@ -109,5 +107,17 @@ public class Presenter {
 
     public void exit() {
         Platform.exit();
+    }
+
+    public void imageKickPressed(MouseEvent mouseEvent) {
+    }
+
+    public void imageSnarePressed(MouseEvent mouseEvent) {
+    }
+
+    public void imageHihatPressed(MouseEvent mouseEvent) {
+    }
+
+    public void imageCymbalPressed(MouseEvent mouseEvent) {
     }
 }
