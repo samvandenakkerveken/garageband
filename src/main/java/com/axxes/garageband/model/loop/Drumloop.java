@@ -1,7 +1,9 @@
 package com.axxes.garageband.model.loop;
 
 import com.axxes.garageband.model.measures.Measure;
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class Drumloop implements Loop {
@@ -26,12 +28,12 @@ public class Drumloop implements Loop {
 
 
     public void step() {
-        //AccesLogger.getInstance().info("Drumloop: Step into measure: " + currentMeasure + ".");
+        Logger.getLogger(Drumloop.class).info("Step into measure: " + currentMeasure + ".");
 
         Measure measure = this.measures[currentMeasure];
 
         if (measure.isEndOfMeasure()){
-            if (currentMeasure == numberOfMeasures){
+            if (currentMeasure == (numberOfMeasures-1)){
                 currentMeasure = 0;
             } else {
                 currentMeasure++;

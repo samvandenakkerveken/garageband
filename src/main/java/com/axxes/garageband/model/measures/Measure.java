@@ -1,6 +1,8 @@
 package com.axxes.garageband.model.measures;
 
+import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class Measure {
@@ -24,7 +26,7 @@ public class Measure {
     }
 
     public void playMeasure() {
-        //AccesLogger.getInstance().info("Measure: playing beat: " + currentBeat + ".");
+        Logger.getLogger(Measure.class).info("Playing beat: " + currentBeat + ".");
         this.beats[currentBeat].playBeat();
 
         if (this.currentBeat == (beatsPerMeasure - 1)) {
