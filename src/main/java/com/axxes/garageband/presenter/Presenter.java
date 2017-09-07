@@ -15,6 +15,9 @@ import javafx.util.Duration;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 @Component
 public class Presenter {
 
@@ -51,6 +54,15 @@ public class Presenter {
                 }));
         timeline.setCycleCount(Animation.INDEFINITE);
         timeline.play();
+
+
+        /*Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                drumloop.step();
+            }
+        }, 0, timeBetweenBeats);*/
     }
 
     @FXML

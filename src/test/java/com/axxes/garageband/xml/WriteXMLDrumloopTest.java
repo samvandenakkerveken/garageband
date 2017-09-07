@@ -1,32 +1,25 @@
-package com.axxes.garageband.loop;
+package com.axxes.garageband.xml;
 
-import com.axxes.garageband.model.instrument.Instrument;
-import com.axxes.garageband.model.instrument.Snare;
+import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
-import com.axxes.garageband.presenter.Presenter;
+import com.axxes.garageband.util.MusicXmlWriter;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-public class GaragebandLoopTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Autowired
-    private Presenter presenter;
+public class WriteXMLDrumloopTest {
+
     private Drumloop drumloop;
 
     @Before
     public void setup() {
         Instrument snare = new Snare("snare.wav");
-        Instrument kick = new Snare("kick.wav");
-        Instrument hihat = new Snare("hihat.wav");
-        Instrument cymbal = new Snare("cymbal.wav");
+        Instrument kick = new Kick("kick.wav");
+        Instrument hihat = new HiHat("hihat.wav");
+        Instrument cymbal = new Cymbal("cymbal.wav");
 
         Beat beat1 = new Beat();
         Beat beat2 = new Beat();
@@ -66,8 +59,8 @@ public class GaragebandLoopTest {
     }
 
     @Test
-    public void drumLoopTest() {
-        this.presenter.startLoop(60, this.drumloop);
+    public void writeDrumloopXml() {
+        assertThat(MusicXmlWriter.writeXMLFromDrumloop(this.drumloop)).isTrue();
     }
 
 }
