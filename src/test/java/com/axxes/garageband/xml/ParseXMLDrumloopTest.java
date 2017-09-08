@@ -4,6 +4,8 @@ import com.axxes.garageband.util.MusicXmlParser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+
 public class ParseXMLDrumloopTest {
 
     @Autowired
@@ -11,7 +13,7 @@ public class ParseXMLDrumloopTest {
 
     @Test
     public void parseXMLDrumloopTest() {
-        parser.parserDrumloopFromXml("./drumloops/awesome.xml");
+        parser.parserDrumloopFromXml(new File("./drumloops/awesome.xml"));
     }
 
 }

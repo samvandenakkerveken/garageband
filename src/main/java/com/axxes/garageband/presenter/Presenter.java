@@ -14,6 +14,7 @@ import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -23,6 +24,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -30,6 +32,9 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -152,7 +157,7 @@ public class Presenter {
             drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
-    public void menuButtonSave(ActionEvent actionEvent) {
+    public void menuButtonSave() {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
         GridPane gridPane = new GridPane();
@@ -175,9 +180,27 @@ public class Presenter {
         }
     }
 
-    public void loadFile(ActionEvent actionEvent) {
-        //TODO load from xml logic
-        parser.parserDrumloopFromXml("drumloops/awesome.xml");
+    public void menuButtonLoad() {
+        final Stage dialog = new Stage();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("drumloops"));
+        fileChooser.setTitle("Open music file");
+        fileChooser.getExtensionFilters();
+
+        File file = fileChooser.showOpenDialog(dialog);
+
+        deleteInstrumentLines();
+       parser.parserDrumloopFromXml(file);
+    }
+
+    private void deleteInstrumentLines() {
+        List<Node> deleteNodes = new ArrayList<>();
+        for (Node node : grid.getChildren()) {
+            if (GridPane.getRowIndex(node) > 0) {
+                deleteNodes.add(node);
+            }
+        }
+        grid.getChildren().removeAll(deleteNodes);
     }
 
     public void exit() {

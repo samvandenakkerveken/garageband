@@ -34,13 +34,12 @@ public class MusicXmlParser {
     @Autowired
     private Presenter presenter;
 
-    public void parserDrumloopFromXml(String fileLocation) {
+    public void parserDrumloopFromXml(File file) {
         // Empty the current drumloop.
         drumloop.setMeasures(Arrays.asList(new Measure(), new Measure()));
         Set<Instrument> instrumentSet = new HashSet<>();
 
         try {
-            File file = new File(fileLocation);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(file);
