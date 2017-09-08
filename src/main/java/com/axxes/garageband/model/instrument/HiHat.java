@@ -3,15 +3,19 @@ package com.axxes.garageband.model.instrument;
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
-
+@Component
 public class HiHat implements Instrument {
 
-    private File soundResource;
+    private String soundResource;
 
     public HiHat(String soundResource){
-        this.soundResource = new File(soundResource);
+        this.soundResource = soundResource;
+    }
+
+    public HiHat(){
+        this.soundResource = "hihat.wav";
     }
 
     @Override

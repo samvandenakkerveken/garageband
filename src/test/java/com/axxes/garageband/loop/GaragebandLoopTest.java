@@ -66,7 +66,7 @@ public class GaragebandLoopTest {
 
     @Test
     public void drumLoopTest() {
-        this.presenter.startLoop(60, this.drumloop);
+//        this.presenter.startLoop(60, this.drumloop);
     }
 
 }

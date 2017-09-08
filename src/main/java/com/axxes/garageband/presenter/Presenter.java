@@ -18,9 +18,10 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
-@Component
+@Controller
 public class Presenter {
 
     @FXML
@@ -36,25 +37,38 @@ public class Presenter {
     @FXML
     AnchorPane imageCymbal;
 
-    Timeline loopTimeline;
+    private Timeline loopTimeline;
+    @Autowired
+    private Drumloop drumloop;
+    private int bpm;
 
-    public void startLoop(int bpm, Drumloop drumloop) {
-        int timeBetweenBeats = 60000 / bpm;
+    @Autowired
+    private Kick kick;
+    @Autowired
+    private Cymbal cymbal;
+    @Autowired
+    private HiHat hiHat;
+    @Autowired
+    private Snare snare;
+
+    private void createLoop() {
+        this.bpm = 60;
+        int timeBetweenBeats = 60000 / this.bpm;
 
         this.loopTimeline = new Timeline(new KeyFrame(
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
-                    drumloop.step();
+                    this.drumloop.step();
                     // UI handling
                 }));
-        loopTimeline.setCycleCount(Animation.INDEFINITE);
-        loopTimeline.play();
+        this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
     @FXML
     protected void initialize(){
         createBaseGrid();
+        createLoop();
     }
 
     @FXML
@@ -96,18 +110,27 @@ public class Presenter {
             imageView.setFitWidth(40);
             imageView.setFitHeight(40);
             button.setGraphic(imageView);
-            button.setOnAction(event -> instrumentToggle(button));
+            int finalI = i;
+            button.setOnAction(event -> instrumentToggle(button, instrument, finalI));
             grid.addRow(gridRow, button);
         }
         gridRow++;
     }
 
-    private void instrumentToggle(Button buton){
-        buton.setStyle(buton.getStyle().contains("-fx-background-color: red") ? "" : "-fx-background-color: red");
-
-    }
-
     //UI event handlers
+
+    private void instrumentToggle(Button button, Instrument instrument, int gridCol){
+        int measureCount =  gridCol / 4;
+        int beatCount = gridCol % 4;
+        if (button.getStyle().contains("-fx-background-color: darkgray")){
+            button.setStyle("");
+            drumloop.removeInstrument(instrument, measureCount, beatCount);
+        }
+        else {
+            button.setStyle("-fx-background-color: darkgray");
+            drumloop.addInstrument(instrument, measureCount, beatCount);
+        }
+    }
     public void saveFile(ActionEvent actionEvent) {
         //TODO: save to xml logic
     }
@@ -123,24 +146,32 @@ public class Presenter {
     public void imageKickPressed() {
         imageKick.setDisable(true);
         String image = "images/kick.png";
-        addInstrumentLine(image, new Kick("/kick.wav"));
+        addInstrumentLine(image, kick);
     }
 
     public void imageSnarePressed() {
         imageSnare.setDisable(true);
         String image = "images/snare.png";
-        addInstrumentLine(image, new Snare("/snare.wav"));
+        addInstrumentLine(image, snare);
     }
 
     public void imageHihatPressed() {
         imageHihat.setDisable(true);
         String image = "/images/hihat.png";
-        addInstrumentLine(image, new HiHat("/hihat.wav"));
+        addInstrumentLine(image, hiHat);
     }
 
     public void imageCymbalPressed() {
         imageCymbal.setDisable(true);
         String image = "/images/cymbal.png";
-        addInstrumentLine(image, new Cymbal("/cymbal.wav"));
+        addInstrumentLine(image, cymbal);
+    }
+
+    public void playLoop(ActionEvent actionEvent) {
+        this.loopTimeline.play();
+    }
+
+    public void stopLoop(ActionEvent actionEvent) {
+        this.loopTimeline.stop();
     }
 }

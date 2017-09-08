@@ -1,5 +1,6 @@
 package com.axxes.garageband.model.loop;
 
+import com.axxes.garageband.model.instrument.Instrument;
 import com.axxes.garageband.model.measures.Measure;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -50,4 +51,12 @@ public class Drumloop implements Loop {
         this.measures = measures;
     }
 
+    public void addInstrument(Instrument instrument, int measureCount, int beatCount) {
+        measures[measureCount].addInstrument(instrument, beatCount);
+    }
+
+    public void removeInstrument(Instrument instrument, int measureCount, int beatCount) {
+        measures[measureCount].removeInstrument(instrument, beatCount);
+
+    }
 }
