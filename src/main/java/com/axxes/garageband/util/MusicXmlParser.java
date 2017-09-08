@@ -2,6 +2,8 @@ package com.axxes.garageband.util;
 
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
+import com.axxes.garageband.model.measures.Measure;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -10,11 +12,25 @@ import org.w3c.dom.NodeList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.util.Arrays;
 
 public class MusicXmlParser {
 
-    public static Drumloop parserDrumloopFromXml(String fileLocation) {
-        Drumloop drumloop = new Drumloop();
+    @Autowired
+    private static Kick kick;
+    @Autowired
+    private static Cymbal cymbal;
+    @Autowired
+    private static HiHat hiHat;
+    @Autowired
+    private static Snare snare;
+    @Autowired
+    private static Drumloop drumloop;
+
+    public static void parserDrumloopFromXml(String fileLocation) {
+
+        // Empty the current drumloop.
+        drumloop.setMeasures(Arrays.asList(new Measure(), new Measure()));
 
         try {
             File file = new File(fileLocation);
@@ -22,17 +38,6 @@ public class MusicXmlParser {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(file);
             doc.getDocumentElement().normalize();
-
-            /*NodeList nodeMeasures = doc.getElementsByTagName("measure");
-
-            for (int i = 0; i < nodeMeasures.getLength(); i++) {
-                Node nNode = nodeMeasures.item(i);
-
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    System.out.println("Measure no : " + eElement.getAttribute("id"));
-                }
-            }*/
 
             // Measures
             NodeList nodeMeasures = doc.getElementsByTagName("measure");
@@ -54,6 +59,8 @@ public class MusicXmlParser {
                         NodeList instruments = bElement.getElementsByTagName("name");
                         for (int k = 0; k < instruments.getLength(); k++) {
                             System.out.println("\t\tInstrument name: " + instruments.item(k).getTextContent());
+                            Instrument instrument = getInstrument(instruments.item(k).getTextContent());
+                            drumloop.addInstrument(instrument, i, j);
                         }
                     }
                 }
@@ -63,27 +70,26 @@ public class MusicXmlParser {
             e.printStackTrace();
         }
 
-        return drumloop;
     }
 
-    private Instrument getInstrument(String instrumentName) {
+    private static Instrument getInstrument(String instrumentName) {
         Instrument instrument;
 
         switch (instrumentName) {
             case "Snare":
-                instrument = new Snare("snare.wav");
+                instrument = snare;
                 break;
             case "Cymbal":
-                instrument = new Cymbal("cymbal.wav");
+                instrument = cymbal;
                 break;
             case "HiHat":
-                instrument = new HiHat("hihat.wav");
+                instrument = hiHat;
                 break;
             case "Kick":
-                instrument = new Kick("kick.wav");
+                instrument = kick;
                 break;
             default:
-                instrument = new HiHat("hihat.wav");
+                instrument = hiHat;
                 break;
         }
 
