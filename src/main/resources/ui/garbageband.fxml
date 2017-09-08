@@ -16,14 +16,19 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" stylesheets="/css/garbage.css" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.axxes.garageband.presenter.Presenter">
     <MenuBar prefWidth="800.0">
         <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save" />
+            <MenuItem mnemonicParsing="false" onAction="#menuButtonSave" text="Save" />
             <MenuItem mnemonicParsing="false" onAction="#loadFile" text="Import" />
             <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit" />
         </Menu>
 
     </MenuBar>
     <GridPane fx:id="grid" layoutX="25.0" layoutY="65.0" prefHeight="350.0" prefWidth="550.0">
-    </GridPane>
+      <columnConstraints>
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+      </rowConstraints></GridPane>
     <GridPane hgap="10.0" layoutX="600.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="150.0" vgap="10.0">
         <AnchorPane fx:id="imageKick" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#imageKickPressed" prefHeight="100.0" prefWidth="80.0" styleClass="anchor">
             <ImageView fitHeight="80" fitWidth="80" pickOnBounds="true" preserveRatio="true">
@@ -58,7 +63,6 @@
             <RowConstraints />
         </rowConstraints>
     </GridPane>
-    <Button layoutX="600.0" layoutY="375.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" onAction="#saveFile" text="Save" />
    <Button layoutX="130.0" layoutY="32.0" mnemonicParsing="false" onAction="#stopLoop" text="Stop" />
    <Button layoutX="65.0" layoutY="32.0" mnemonicParsing="false" onAction="#playLoop" text="Play" />
 </Pane>

@@ -10,13 +10,17 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,8 +136,27 @@ public class Presenter {
             drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
-    public void saveFile(ActionEvent actionEvent) {
-        boolean onSucces = MusicXmlWriter.writeXMLFromDrumloop(drumloop, "drumloop");
+    public void menuButtonSave(ActionEvent actionEvent) {
+        final Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.addRow(0, new Label("Filename"));
+        TextField textField = new TextField("drumloop");
+        gridPane.addRow(1,textField);
+        Button saveButton = new Button("Save");
+        saveButton.setOnAction(event -> saveFile(textField.getText(), dialog));
+        gridPane.addRow(2, saveButton);
+        Scene dialogScene = new Scene(gridPane, 200, 150);
+        dialog.setScene(dialogScene);
+        dialog.show();
+
+    }
+
+    private void saveFile(String filename, Stage dialog){
+        if (MusicXmlWriter.writeXMLFromDrumloop(drumloop, filename)){
+            dialog.close();
+        }
     }
 
     public void loadFile(ActionEvent actionEvent) {

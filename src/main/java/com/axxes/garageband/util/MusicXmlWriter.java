@@ -30,7 +30,7 @@ public class MusicXmlWriter {
 
             // Drumloop
             Document doc = db.newDocument();
-            Element rootElement = doc.createElement(fileName);
+            Element rootElement = doc.createElement("drumloop");
             doc.appendChild(rootElement);
 
             // Measures
@@ -65,7 +65,7 @@ public class MusicXmlWriter {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("./drumloops/drumloop.xml"));
+            StreamResult result = new StreamResult(new File("./drumloops/" + fileName + ".xml"));
 
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
