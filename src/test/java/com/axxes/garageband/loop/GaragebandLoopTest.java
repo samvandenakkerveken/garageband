@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Arrays;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GaragebandLoopTest {
@@ -61,7 +63,7 @@ public class GaragebandLoopTest {
         measure2.addBeatOnLocation(beat8, 3);
 
         this.drumloop = new Drumloop();
-        this.drumloop.setMeasures(new Measure[] {measure1, measure2});
+        this.drumloop.setMeasures(Arrays.asList(measure1, measure2));
     }
 
     @Test

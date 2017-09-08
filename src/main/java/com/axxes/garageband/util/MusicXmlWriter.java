@@ -33,21 +33,21 @@ public class MusicXmlWriter {
             doc.appendChild(rootElement);
 
             // Measures
-            Measure[] measures = drumloop.getMeasures();
-            for (int i = 0; i < measures.length; i++) {
+            List<Measure> measures = drumloop.getMeasures();
+            for (int i = 0; i < measures.size(); i++) {
                 Element measure = doc.createElement("measure");
                 measure.setAttribute("id", "" + i);
                 rootElement.appendChild(measure);
 
                 // Beats
-                Beat[] beats = measures[i].getBeats();
-                for (int j = 0; j < beats.length; j++) {
+                List<Beat> beats = measures.get(i).getBeats();
+                for (int j = 0; j < beats.size(); j++) {
                     Element beat = doc.createElement("beat");
                     beat.setAttribute("id", "" + j);
                     measure.appendChild(beat);
 
                     // Instruments
-                    List<Instrument> instruments = beats[j].getInstruments();
+                    List<Instrument> instruments = beats.get(j).getInstruments();
                     for (int k = 0; k < instruments.size(); k++) {
                         Element instrument = doc.createElement("instrument");
                         instrument.setAttribute("id", "" + k);

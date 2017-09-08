@@ -8,6 +8,8 @@ import com.axxes.garageband.util.MusicXmlWriter;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class WriteXMLDrumloopTest {
@@ -55,7 +57,7 @@ public class WriteXMLDrumloopTest {
         measure2.addBeatOnLocation(beat8, 3);
 
         this.drumloop = new Drumloop();
-        this.drumloop.setMeasures(new Measure[] {measure1, measure2});
+        this.drumloop.setMeasures(Arrays.asList(measure1, measure2));
     }
 
     @Test

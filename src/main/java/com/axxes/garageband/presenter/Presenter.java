@@ -52,7 +52,7 @@ public class Presenter {
     private Snare snare;
 
     private void createLoop() {
-        this.bpm = 60;
+        this.bpm = 120;
         int timeBetweenBeats = 60000 / this.bpm;
 
         this.loopTimeline = new Timeline(new KeyFrame(

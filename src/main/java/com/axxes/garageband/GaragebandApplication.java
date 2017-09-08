@@ -1,12 +1,5 @@
 package com.axxes.garageband;
 
-import com.axxes.garageband.model.instrument.Instrument;
-import com.axxes.garageband.model.instrument.Snare;
-import com.axxes.garageband.model.loop.Drumloop;
-import com.axxes.garageband.model.measures.Beat;
-import com.axxes.garageband.model.measures.Measure;
-import com.axxes.garageband.presenter.Presenter;
-import com.axxes.garageband.view.GarbageBandUI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,22 +10,26 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import javax.swing.*;
+
 @SpringBootApplication
 public class GaragebandApplication extends Application {
 
+    private ConfigurableApplicationContext context;
+
     public static void main(String[] args) {
-        TinySound.init();
-        launch(args);
+        launch(GaragebandApplication.class, args);
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ConfigurableApplicationContext context = SpringApplication.run(GaragebandApplication.class);
+        TinySound.init();
 
-        final GarbageBandUI garbageBandUI = context.getBean(GarbageBandUI.class);
-        final Presenter presenter = context.getBean(Presenter.class);
+        context = SpringApplication.run(GaragebandApplication.class);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/garbageband.fxml"));
+        fxmlLoader.setControllerFactory(context::getBean);
 
-        Parent root = FXMLLoader.load(getClass().getResource("/ui/garbageband.fxml"));
+        Parent root = fxmlLoader.load();
 
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
