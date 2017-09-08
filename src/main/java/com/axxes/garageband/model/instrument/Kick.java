@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class Kick implements Instrument {
 
-    private String soundResource;
+    private final String soundResource;
+    private final String image;
 
-    public Kick(String soundResource){
+    public Kick(String soundResource, String image){
         this.soundResource = soundResource;
+        this.image = image;
     }
 
     public Kick(){
         this.soundResource = "kick.wav";
+        image = "/images/kick.png";
     }
 
     @Override
@@ -25,4 +28,7 @@ public class Kick implements Instrument {
         sound.play();
     }
 
+    public String getImage() {
+        return image;
+    }
 }

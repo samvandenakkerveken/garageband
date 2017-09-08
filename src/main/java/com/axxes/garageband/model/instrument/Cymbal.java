@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class Cymbal implements Instrument {
 
-    private String soundResource;
+    private final String soundResource;
+    private final String image;
 
-    public Cymbal(String soundResource){
+    public Cymbal(String soundResource, String image){
         this.soundResource = soundResource;
+        this.image = image;
     }
 
     public Cymbal(){
         this.soundResource = "cymbal.wav";
+        this.image = "images/cymbal.png";
     }
 
     @Override
@@ -26,4 +29,7 @@ public class Cymbal implements Instrument {
         sound.play();
     }
 
+    public String getImage() {
+        return image;
+    }
 }

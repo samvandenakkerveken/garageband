@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class Snare implements Instrument {
 
-    private String soundResource;
+    private final String soundResource;
+    private final String image;
 
-    public Snare(String soundResource){
+    public Snare(String soundResource, String image){
         this.soundResource = soundResource;
+        this.image = image;
     }
 
     public Snare(){
         this.soundResource = "snare.wav";
+        image = "/images/snare.png";
     }
 
     @Override
@@ -25,4 +28,7 @@ public class Snare implements Instrument {
         sound.play();
     }
 
+    public String getImage() {
+        return image;
+    }
 }

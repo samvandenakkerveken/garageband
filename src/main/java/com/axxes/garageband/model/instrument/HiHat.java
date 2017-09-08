@@ -8,14 +8,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class HiHat implements Instrument {
 
-    private String soundResource;
+    private final String soundResource;
+    private final String image;
 
-    public HiHat(String soundResource){
+    public HiHat(String soundResource, String image){
         this.soundResource = soundResource;
+        this.image = image;
     }
 
     public HiHat(){
         this.soundResource = "hihat.wav";
+        this.image = "/images/hihat.png";
     }
 
     @Override
@@ -25,4 +28,7 @@ public class HiHat implements Instrument {
         sound.play();
     }
 
+    public String getImage() {
+        return image;
+    }
 }

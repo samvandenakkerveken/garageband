@@ -24,10 +24,10 @@ public class GaragebandLoopTest {
 
     @Before
     public void setup() {
-        Instrument snare = new Snare("snare.wav");
-        Instrument kick = new Kick("kick.wav");
-        Instrument hihat = new HiHat("hihat.wav");
-        Instrument cymbal = new Cymbal("cymbal.wav");
+        Instrument snare = new Snare();
+        Instrument kick = new Kick();
+        Instrument hihat = new HiHat();
+        Instrument cymbal = new Cymbal();
 
         Beat beat1 = new Beat();
         Beat beat2 = new Beat();

@@ -114,8 +114,8 @@ public class Presenter {
         grid.setBorder(Border.EMPTY);
     }
 
-    private void addInstrumentLine(String imagePath, Instrument instrument){
-        Image image = new Image(imagePath);
+    private void addInstrumentLine(Instrument instrument){
+        Image image = new Image(instrument.getImage());
         grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
 
         for (int i = 0; i < 8; i++){
@@ -128,8 +128,7 @@ public class Presenter {
             int measureCount =  i / 4;
             int beatCount = i % 4;
             Beat beat = drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
-            int finalI = i;
-            button.setOnAction(event -> instrumentToggle(button, instrument, finalI));
+            button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
             BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
             button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
             grid.addRow(gridRow, button);
@@ -139,10 +138,7 @@ public class Presenter {
 
     //UI event handlers
 
-    private void instrumentToggle(Button button, Instrument instrument, int gridCol){
-        int measureCount =  gridCol / 4;
-        int beatCount = gridCol % 4;
-
+    private void instrumentToggle(Instrument instrument, int measureCount, int beatCount){
         if (drumloop.hasInstrument(instrument, measureCount, beatCount)){
             drumloop.removeInstrument(instrument, measureCount, beatCount);
         }
@@ -183,26 +179,22 @@ public class Presenter {
 
     public void imageKickPressed() {
         imageKick.setDisable(true);
-        String image = "images/kick.png";
-        addInstrumentLine(image, kick);
+        addInstrumentLine(kick);
     }
 
     public void imageSnarePressed() {
         imageSnare.setDisable(true);
-        String image = "images/snare.png";
-        addInstrumentLine(image, snare);
+        addInstrumentLine(snare);
     }
 
     public void imageHihatPressed() {
         imageHihat.setDisable(true);
-        String image = "/images/hihat.png";
-        addInstrumentLine(image, hiHat);
+        addInstrumentLine(hiHat);
     }
 
     public void imageCymbalPressed() {
         imageCymbal.setDisable(true);
-        String image = "/images/cymbal.png";
-        addInstrumentLine(image, cymbal);
+        addInstrumentLine(cymbal);
     }
 
     public void playLoop(ActionEvent actionEvent) {
