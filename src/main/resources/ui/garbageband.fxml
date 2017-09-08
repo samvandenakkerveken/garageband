@@ -58,7 +58,7 @@
             <RowConstraints />
         </rowConstraints>
     </GridPane>
-    <Button layoutX="600.0" layoutY="375.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="Save" />
+    <Button layoutX="600.0" layoutY="375.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" onAction="#saveFile" text="Save" />
    <Button layoutX="130.0" layoutY="32.0" mnemonicParsing="false" onAction="#stopLoop" text="Stop" />
    <Button layoutX="65.0" layoutY="32.0" mnemonicParsing="false" onAction="#playLoop" text="Play" />
 </Pane>

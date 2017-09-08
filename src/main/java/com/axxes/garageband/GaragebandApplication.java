@@ -1,5 +1,6 @@
 package com.axxes.garageband;
 
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,7 +11,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import javax.swing.*;
 
 @SpringBootApplication
 public class GaragebandApplication extends Application {
