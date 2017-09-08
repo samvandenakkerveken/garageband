@@ -133,7 +133,7 @@ public class Presenter {
         }
     }
     public void saveFile(ActionEvent actionEvent) {
-        boolean onSucces = MusicXmlWriter.writeXMLFromDrumloop(drumloop);
+        boolean onSucces = MusicXmlWriter.writeXMLFromDrumloop(drumloop, "drumloop");
     }
 
     public void loadFile(ActionEvent actionEvent) {

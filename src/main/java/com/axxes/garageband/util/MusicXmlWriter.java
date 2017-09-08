@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -20,7 +21,7 @@ import java.util.List;
 
 public class MusicXmlWriter {
 
-    public static boolean writeXMLFromDrumloop(Drumloop drumloop) {
+    public static boolean writeXMLFromDrumloop(Drumloop drumloop, String fileName) {
         boolean succeeded = false;
 
         try {
@@ -29,7 +30,7 @@ public class MusicXmlWriter {
 
             // Drumloop
             Document doc = db.newDocument();
-            Element rootElement = doc.createElement("drumloop");
+            Element rootElement = doc.createElement(fileName);
             doc.appendChild(rootElement);
 
             // Measures
@@ -65,6 +66,9 @@ public class MusicXmlWriter {
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File("./drumloops/drumloop.xml"));
+
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
             transformer.transform(source, result);
 
