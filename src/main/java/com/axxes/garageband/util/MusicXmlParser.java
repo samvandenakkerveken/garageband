@@ -3,7 +3,9 @@ package com.axxes.garageband.util;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Measure;
+import com.axxes.garageband.presenter.Presenter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -13,24 +15,29 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
+@Component
 public class MusicXmlParser {
 
     @Autowired
-    private static Kick kick;
+    private Kick kick;
     @Autowired
-    private static Cymbal cymbal;
+    private Cymbal cymbal;
     @Autowired
-    private static HiHat hiHat;
+    private HiHat hiHat;
     @Autowired
-    private static Snare snare;
+    private Snare snare;
     @Autowired
-    private static Drumloop drumloop;
+    private Drumloop drumloop;
+    @Autowired
+    private Presenter presenter;
 
-    public static void parserDrumloopFromXml(String fileLocation) {
-
+    public void parserDrumloopFromXml(String fileLocation) {
         // Empty the current drumloop.
         drumloop.setMeasures(Arrays.asList(new Measure(), new Measure()));
+        Set<Instrument> instrumentSet = new HashSet<>();
 
         try {
             File file = new File(fileLocation);
@@ -61,10 +68,13 @@ public class MusicXmlParser {
                             System.out.println("\t\tInstrument name: " + instruments.item(k).getTextContent());
                             Instrument instrument = getInstrument(instruments.item(k).getTextContent());
                             drumloop.addInstrument(instrument, i, j);
+                            instrumentSet.add(instrument);
                         }
                     }
                 }
             }
+
+            presenter.createInstrumentLines(instrumentSet);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -72,24 +82,24 @@ public class MusicXmlParser {
 
     }
 
-    private static Instrument getInstrument(String instrumentName) {
+    private Instrument getInstrument(String instrumentName) {
         Instrument instrument;
 
         switch (instrumentName) {
             case "Snare":
-                instrument = snare;
+                instrument = this.snare;
                 break;
             case "Cymbal":
-                instrument = cymbal;
+                instrument = this.cymbal;
                 break;
             case "HiHat":
-                instrument = hiHat;
+                instrument = this.hiHat;
                 break;
             case "Kick":
-                instrument = kick;
+                instrument = this.kick;
                 break;
             default:
-                instrument = hiHat;
+                instrument = this.hiHat;
                 break;
         }
 

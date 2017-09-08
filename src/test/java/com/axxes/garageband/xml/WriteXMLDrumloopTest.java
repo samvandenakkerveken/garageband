@@ -4,10 +4,13 @@ import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
+import com.axxes.garageband.util.MusicXmlWriter;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class WriteXMLDrumloopTest {
 
@@ -59,7 +62,7 @@ public class WriteXMLDrumloopTest {
 
     @Test
     public void writeDrumloopXml() {
-        //assertThat(MusicXmlWriter.writeXMLFromDrumloop(this.drumloop)).isTrue();
+        assertThat(MusicXmlWriter.writeXMLFromDrumloop(this.drumloop, "drumloop")).isTrue();
     }
 
 }

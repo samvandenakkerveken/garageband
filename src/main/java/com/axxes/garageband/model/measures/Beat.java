@@ -33,4 +33,5 @@ public class Beat {
     public ObservableList<Instrument> getInstruments() {
         return instruments;
     }
+
 }

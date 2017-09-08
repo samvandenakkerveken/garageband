@@ -3,6 +3,7 @@ package com.axxes.garageband.presenter;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
+import com.axxes.garageband.util.MusicXmlParser;
 import com.axxes.garageband.util.MusicXmlWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -29,6 +30,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import java.util.Set;
+
 @Controller
 public class Presenter {
 
@@ -51,6 +54,9 @@ public class Presenter {
     @Autowired
     private Drumloop drumloop;
     private int bpm;
+
+    @Autowired
+    MusicXmlParser parser;
 
     @Autowired
     private Kick kick;
@@ -171,6 +177,7 @@ public class Presenter {
 
     public void loadFile(ActionEvent actionEvent) {
         //TODO load from xml logic
+        parser.parserDrumloopFromXml("drumloops/awesome.xml");
     }
 
     public void exit() {
@@ -206,5 +213,9 @@ public class Presenter {
         this.loopTimeline.stop();
     }
 
-
+    public void createInstrumentLines(Set<Instrument> instrumentSet) {
+        for (Instrument i : instrumentSet) {
+            this.addInstrumentLine(i);
+        }
+    }
 }
