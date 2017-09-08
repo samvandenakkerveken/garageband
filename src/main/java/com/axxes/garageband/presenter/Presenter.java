@@ -97,6 +97,8 @@ public class Presenter {
         createLoop();
     }
 
+
+
     @FXML
     private Label createLabel(String text){
         Label label = new Label(text);
@@ -125,7 +127,31 @@ public class Presenter {
         grid.setBorder(Border.EMPTY);
     }
 
+    private void disableAddInstrumentButton(Instrument instrument){
+
+        if (instrument.getClass().equals(HiHat.class)){
+            imageHihat.setDisable(true);
+        }
+        else if (instrument.getClass().equals(Snare.class)) {
+            imageSnare.setDisable(true);
+        }
+        else if (instrument.getClass().equals(Kick.class)){
+            imageKick.setDisable(true);
+        }
+        else if (instrument.getClass().equals(Cymbal.class)){
+            imageCymbal.setDisable(true);
+        }
+    }
+
+    private void enableAddInstrumentButton() {
+        imageHihat.setDisable(false);
+        imageSnare.setDisable(false);
+        imageKick.setDisable(false);
+        imageCymbal.setDisable(false);
+    }
+
     private void addInstrumentLine(Instrument instrument){
+       disableAddInstrumentButton(instrument);
         Image image = new Image(instrument.getImage());
         grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
 
@@ -147,7 +173,6 @@ public class Presenter {
         gridRow++;
     }
 
-    //UI event handlers
 
     private void instrumentToggle(Instrument instrument, int measureCount, int beatCount){
         if (drumloop.hasInstrument(instrument, measureCount, beatCount)){
@@ -203,27 +228,32 @@ public class Presenter {
         grid.getChildren().removeAll(deleteNodes);
     }
 
+    public void createInstrumentLines(Set<Instrument> instrumentSet) {
+        enableAddInstrumentButton();
+        for (Instrument i : instrumentSet) {
+            this.addInstrumentLine(i);
+        }
+    }
+
+    //UI event handlers
+
     public void exit() {
         Platform.exit();
     }
 
     public void imageKickPressed() {
-        imageKick.setDisable(true);
         addInstrumentLine(kick);
     }
 
     public void imageSnarePressed() {
-        imageSnare.setDisable(true);
         addInstrumentLine(snare);
     }
 
     public void imageHihatPressed() {
-        imageHihat.setDisable(true);
         addInstrumentLine(hiHat);
     }
 
     public void imageCymbalPressed() {
-        imageCymbal.setDisable(true);
         addInstrumentLine(cymbal);
     }
 
@@ -234,11 +264,5 @@ public class Presenter {
 
     public void stopLoop(ActionEvent actionEvent) {
         this.loopTimeline.stop();
-    }
-
-    public void createInstrumentLines(Set<Instrument> instrumentSet) {
-        for (Instrument i : instrumentSet) {
-            this.addInstrumentLine(i);
-        }
     }
 }
