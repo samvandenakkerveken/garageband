@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -22,7 +23,7 @@
         </Menu>
 
     </MenuBar>
-    <GridPane fx:id="grid" layoutX="25.0" layoutY="65.0" prefHeight="350.0" prefWidth="550.0">
+    <GridPane fx:id="grid" layoutX="25.0" layoutY="65.0" prefHeight="300.0" prefWidth="550.0">
       <columnConstraints>
          <ColumnConstraints />
       </columnConstraints>
@@ -63,6 +64,8 @@
             <RowConstraints />
         </rowConstraints>
     </GridPane>
-   <Button layoutX="130.0" layoutY="32.0" mnemonicParsing="false" onAction="#stopLoop" text="Stop" />
-   <Button layoutX="65.0" layoutY="32.0" mnemonicParsing="false" onAction="#playLoop" text="Play" />
+   <Button layoutX="300.0" layoutY="365.0" mnemonicParsing="false" onAction="#stopLoop" text="Stop" />
+   <Button layoutX="253.0" layoutY="365.0" mnemonicParsing="false" onAction="#playLoop" text="Play" />
+   <TextField fx:id="bpmTextField" layoutX="650.0" layoutY="365.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="100.0" />
+   <Label layoutX="600.0" layoutY="370.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="50.0" text="BPM:" />
 </Pane>

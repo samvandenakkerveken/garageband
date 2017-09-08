@@ -2,7 +2,6 @@ package com.axxes.garageband.model.measures;
 
 import com.axxes.garageband.model.instrument.Instrument;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class Measure {
         }
     }
 
-    public Boolean isEndOfMeasure(){
+    public boolean isEndOfMeasure(){
         return currentBeat == (beatsPerMeasure - 1);
     }
 
@@ -58,5 +57,9 @@ public class Measure {
     public void removeInstrument(Instrument instrument, int beatCount) {
         beats.get(beatCount).removeInstrument(instrument);
 
+    }
+
+    public boolean hasInstrument(Instrument instrument, int beatCount) {
+        return beats.get(beatCount).getInstruments().contains(instrument);
     }
 }

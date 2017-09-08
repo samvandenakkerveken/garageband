@@ -2,11 +2,14 @@ package com.axxes.garageband.presenter;
 
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
+import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.util.MusicXmlWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -41,6 +44,8 @@ public class Presenter {
     AnchorPane imageHihat;
     @FXML
     AnchorPane imageCymbal;
+    @FXML
+    TextField bpmTextField;
 
     private Timeline loopTimeline;
     @Autowired
@@ -57,8 +62,11 @@ public class Presenter {
     private Snare snare;
 
     private void createLoop() {
-        this.bpm = 180;
-        int timeBetweenBeats = 60000 / this.bpm;
+        if (this.loopTimeline != null) {
+            this.loopTimeline.stop();
+        }
+        bpm = Integer.parseInt(bpmTextField.getText());
+        int timeBetweenBeats = 60000/this.bpm;
 
         this.loopTimeline = new Timeline(new KeyFrame(
                 Duration.millis(timeBetweenBeats),
@@ -73,6 +81,8 @@ public class Presenter {
     @FXML
     protected void initialize(){
         createBaseGrid();
+        this.bpm = 180;
+        bpmTextField.setText(String.valueOf(bpm));
         createLoop();
     }
 
@@ -115,8 +125,13 @@ public class Presenter {
             imageView.setFitWidth(40);
             imageView.setFitHeight(40);
             button.setGraphic(imageView);
+            int measureCount =  i / 4;
+            int beatCount = i % 4;
+            Beat beat = drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
             int finalI = i;
             button.setOnAction(event -> instrumentToggle(button, instrument, finalI));
+            BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
+            button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
             grid.addRow(gridRow, button);
         }
         gridRow++;
@@ -127,12 +142,11 @@ public class Presenter {
     private void instrumentToggle(Button button, Instrument instrument, int gridCol){
         int measureCount =  gridCol / 4;
         int beatCount = gridCol % 4;
-        if (button.getStyle().contains("-fx-background-color: darkgray")){
-            button.setStyle("");
+
+        if (drumloop.hasInstrument(instrument, measureCount, beatCount)){
             drumloop.removeInstrument(instrument, measureCount, beatCount);
         }
         else {
-            button.setStyle("-fx-background-color: darkgray");
             drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
@@ -192,10 +206,13 @@ public class Presenter {
     }
 
     public void playLoop(ActionEvent actionEvent) {
+        createLoop();
         this.loopTimeline.play();
     }
 
     public void stopLoop(ActionEvent actionEvent) {
         this.loopTimeline.stop();
     }
+
+
 }

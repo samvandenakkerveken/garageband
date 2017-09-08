@@ -1,20 +1,18 @@
 package com.axxes.garageband.model.measures;
 
 import com.axxes.garageband.model.instrument.Instrument;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 public class Beat {
 
-    private List<Instrument> instruments;
+    private ObservableList<Instrument> instruments;
 
     public Beat() {
-        this.instruments = new ArrayList<>();
+        this.instruments = FXCollections.observableArrayList();
     }
 
     public void addInstrument(Instrument instrument) {
@@ -32,7 +30,7 @@ public class Beat {
         }
     }
 
-    public List<Instrument> getInstruments() {
+    public ObservableList<Instrument> getInstruments() {
         return instruments;
     }
 }
