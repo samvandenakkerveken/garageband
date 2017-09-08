@@ -2,6 +2,7 @@ package com.axxes.garageband.presenter;
 
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
+import com.axxes.garageband.util.MusicXmlWriter;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -132,7 +133,7 @@ public class Presenter {
         }
     }
     public void saveFile(ActionEvent actionEvent) {
-        //TODO: save to xml logic
+        boolean onSucces = MusicXmlWriter.writeXMLFromDrumloop(drumloop);
     }
 
     public void loadFile(ActionEvent actionEvent) {
