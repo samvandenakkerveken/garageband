@@ -61,4 +61,16 @@ public class Drumloop implements Loop {
     public boolean hasInstrument(Instrument instrument, int measureCount, int beatCount) {
         return measures.get(measureCount).hasInstrument(instrument, beatCount);
     }
+
+    public int getCurrentMeasure() {
+        return currentMeasure;
+    }
+
+    public int getCurrentBeat() {
+        return measures.get(currentMeasure).getCurrentBeat();
+    }
+
+    public void setCurrentMeasure(int currentMeasure) {
+        this.currentMeasure = currentMeasure;
+    }
 }

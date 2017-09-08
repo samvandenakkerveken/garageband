@@ -37,6 +37,7 @@ public class MusicXmlParser {
     public void parserDrumloopFromXml(File file) {
         // Empty the current drumloop.
         drumloop.setMeasures(Arrays.asList(new Measure(), new Measure()));
+        drumloop.setCurrentMeasure(0);
         Set<Instrument> instrumentSet = new HashSet<>();
 
         try {

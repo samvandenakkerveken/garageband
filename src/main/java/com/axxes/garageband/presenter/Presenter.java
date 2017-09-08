@@ -24,6 +24,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -54,6 +57,8 @@ public class Presenter {
     AnchorPane imageCymbal;
     @FXML
     TextField bpmTextField;
+    @FXML
+    Pane root;
 
     private Timeline loopTimeline;
     @Autowired
@@ -72,48 +77,65 @@ public class Presenter {
     @Autowired
     private Snare snare;
 
+    private Rectangle highLighter;
+    private int highlighterPosition;
+
     private void createLoop() {
         if (this.loopTimeline != null) {
             this.loopTimeline.stop();
         }
         bpm = Integer.parseInt(bpmTextField.getText());
-        int timeBetweenBeats = 60000/this.bpm;
+        int timeBetweenBeats = 60000 / this.bpm;
 
         this.loopTimeline = new Timeline(new KeyFrame(
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
                     this.drumloop.step();
+                    stepHighlighter();
                     // UI handling
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
     @FXML
-    protected void initialize(){
+    protected void initialize() {
         createBaseGrid();
         this.bpm = 180;
         bpmTextField.setText(String.valueOf(bpm));
+        createHighlighter();
         createLoop();
     }
 
+    private void createHighlighter() {
+        highLighter = new Rectangle(85, 65, 60, 30);
+        highlighterPosition = 0;
+        highLighter.setMouseTransparent(true);
+        highLighter.setFill(Color.RED);
+        highLighter.setOpacity(0.5);
+        root.getChildren().add(highLighter);
+    }
 
+    private void stepHighlighter(){
+        if (highlighterPosition == 8){
+            highlighterPosition = 0;
+        }
+        highLighter.setX(85 + (60*highlighterPosition));
+        highlighterPosition++;
+
+    }
 
     @FXML
-    private Label createLabel(String text){
+    private Label createLabel(String text) {
         Label label = new Label(text);
         label.setAlignment(Pos.CENTER);
-        label.setPrefWidth(55);
+        label.setPrefWidth(60);
         label.setPrefHeight(30);
-//        label.setStyle("-fx-border-style: solid");
-//        label.setStyle("-fx-border-width: 2px");
-//        label.setStyle("-fx-border-color: gray");
-
         return label;
     }
 
     @FXML
-    private void createBaseGrid(){
+    private void createBaseGrid() {
         grid.add(createLabel("Beat"), 0, 0);
         grid.add(createLabel("1"), 1, 0);
         grid.add(createLabel("2"), 2, 0);
@@ -127,18 +149,15 @@ public class Presenter {
         grid.setBorder(Border.EMPTY);
     }
 
-    private void disableAddInstrumentButton(Instrument instrument){
+    private void disableAddInstrumentButton(Instrument instrument) {
 
-        if (instrument.getClass().equals(HiHat.class)){
+        if (instrument.getClass().equals(HiHat.class)) {
             imageHihat.setDisable(true);
-        }
-        else if (instrument.getClass().equals(Snare.class)) {
+        } else if (instrument.getClass().equals(Snare.class)) {
             imageSnare.setDisable(true);
-        }
-        else if (instrument.getClass().equals(Kick.class)){
+        } else if (instrument.getClass().equals(Kick.class)) {
             imageKick.setDisable(true);
-        }
-        else if (instrument.getClass().equals(Cymbal.class)){
+        } else if (instrument.getClass().equals(Cymbal.class)) {
             imageCymbal.setDisable(true);
         }
     }
@@ -150,38 +169,44 @@ public class Presenter {
         imageCymbal.setDisable(false);
     }
 
-    private void addInstrumentLine(Instrument instrument){
-       disableAddInstrumentButton(instrument);
+    private void addInstrumentLine(Instrument instrument) {
+        highLighter.setHeight(highLighter.getHeight()+50);
+        disableAddInstrumentButton(instrument);
         Image image = new Image(instrument.getImage());
         grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
 
-        for (int i = 0; i < 8; i++){
+        for (int i = 0; i < 8; i++) {
             Button button = new Button();
             ImageView imageView = new ImageView();
             imageView.setImage(image);
             imageView.setFitWidth(40);
             imageView.setFitHeight(40);
             button.setGraphic(imageView);
-            int measureCount =  i / 4;
+            int measureCount = i / 4;
             int beatCount = i % 4;
-            Beat beat = drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
             button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
-            BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
-            button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
+            bindBeatToButton(instrument, button, measureCount, beatCount);
+
             grid.addRow(gridRow, button);
         }
         gridRow++;
     }
 
+    private void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
+        Beat beat = drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
+        BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
+        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
+    }
 
-    private void instrumentToggle(Instrument instrument, int measureCount, int beatCount){
-        if (drumloop.hasInstrument(instrument, measureCount, beatCount)){
+
+    private void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
+        if (drumloop.hasInstrument(instrument, measureCount, beatCount)) {
             drumloop.removeInstrument(instrument, measureCount, beatCount);
-        }
-        else {
+        } else {
             drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
+
     public void menuButtonSave() {
         final Stage dialog = new Stage();
         dialog.initModality(Modality.APPLICATION_MODAL);
@@ -189,7 +214,7 @@ public class Presenter {
         gridPane.setAlignment(Pos.CENTER);
         gridPane.addRow(0, new Label("Filename"));
         TextField textField = new TextField("drumloop");
-        gridPane.addRow(1,textField);
+        gridPane.addRow(1, textField);
         Button saveButton = new Button("Save");
         saveButton.setOnAction(event -> saveFile(textField.getText(), dialog));
         gridPane.addRow(2, saveButton);
@@ -199,8 +224,8 @@ public class Presenter {
 
     }
 
-    private void saveFile(String filename, Stage dialog){
-        if (MusicXmlWriter.writeXMLFromDrumloop(drumloop, filename)){
+    private void saveFile(String filename, Stage dialog) {
+        if (MusicXmlWriter.writeXMLFromDrumloop(drumloop, filename)) {
             dialog.close();
         }
     }
@@ -214,8 +239,11 @@ public class Presenter {
 
         File file = fileChooser.showOpenDialog(dialog);
 
+        highlighterPosition = 0;
+        highLighter.setX(85);
+        highLighter.setHeight(30);
         deleteInstrumentLines();
-       parser.parserDrumloopFromXml(file);
+        parser.parserDrumloopFromXml(file);
     }
 
     private void deleteInstrumentLines() {

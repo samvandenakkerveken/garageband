@@ -62,4 +62,8 @@ public class Measure {
     public boolean hasInstrument(Instrument instrument, int beatCount) {
         return beats.get(beatCount).getInstruments().contains(instrument);
     }
+
+    public int getCurrentBeat() {
+        return currentBeat;
+    }
 }

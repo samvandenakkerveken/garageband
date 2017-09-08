@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class Beat {
 
+
     private ObservableList<Instrument> instruments;
 
     public Beat() {
