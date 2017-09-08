@@ -1,5 +1,6 @@
 package com.axxes.garageband.presenter;
 
+import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -8,8 +9,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
@@ -21,6 +25,16 @@ public class Presenter {
 
     @FXML
     private GridPane grid;
+    private int gridRow = 1;
+
+    @FXML
+    AnchorPane imageKick;
+    @FXML
+    AnchorPane imageSnare;
+    @FXML
+    AnchorPane imageHihat;
+    @FXML
+    AnchorPane imageCymbal;
 
     private Drumloop drumloop = new Drumloop();
 
@@ -74,9 +88,9 @@ public class Presenter {
         label.setAlignment(Pos.CENTER);
         label.setPrefWidth(55);
         label.setPrefHeight(30);
-        label.setStyle("-fx-border-style: solid");
-        label.setStyle("-fx-border-width: 2px");
-        label.setStyle("-fx-border-color: gray");
+//        label.setStyle("-fx-border-style: solid");
+//        label.setStyle("-fx-border-width: 2px");
+//        label.setStyle("-fx-border-color: gray");
 
         return label;
     }
@@ -96,28 +110,62 @@ public class Presenter {
         grid.setBorder(Border.EMPTY);
     }
 
+    private void addInstrumentLine(String imagePath, Instrument instrument){
+        Image image = new Image(imagePath);
+        grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
+
+        for (int i = 0; i < 8; i++){
+            Button button = new Button();
+            ImageView imageView = new ImageView();
+            imageView.setImage(image);
+            imageView.setFitWidth(40);
+            imageView.setFitHeight(40);
+            button.setGraphic(imageView);
+            button.setOnAction(event -> instrumentToggle(button));
+            grid.addRow(gridRow, button);
+        }
+        gridRow++;
+    }
+
+    private void instrumentToggle(Button buton){
+        buton.setStyle(buton.getStyle().contains("-fx-background-color: red") ? "" : "-fx-background-color: red");
+
+    }
+
     //UI event handlers
     public void saveFile(ActionEvent actionEvent) {
         //TODO: save to xml logic
     }
 
     public void loadFile(ActionEvent actionEvent) {
-        //TODO: load from xml logic
+        //TODO load from xml logic
     }
 
     public void exit() {
         Platform.exit();
     }
 
-    public void imageKickPressed(MouseEvent mouseEvent) {
+    public void imageKickPressed() {
+        imageKick.setDisable(true);
+        String image = "images/kick.png";
+        addInstrumentLine(image, new Kick("/kick.wav"));
     }
 
-    public void imageSnarePressed(MouseEvent mouseEvent) {
+    public void imageSnarePressed() {
+        imageSnare.setDisable(true);
+        String image = "images/snare.png";
+        addInstrumentLine(image, new Snare("/snare.wav"));
     }
 
-    public void imageHihatPressed(MouseEvent mouseEvent) {
+    public void imageHihatPressed() {
+        imageHihat.setDisable(true);
+        String image = "/images/hihat.png";
+        addInstrumentLine(image, new HiHat("/hihat.wav"));
     }
 
-    public void imageCymbalPressed(MouseEvent mouseEvent) {
+    public void imageCymbalPressed() {
+        imageCymbal.setDisable(true);
+        String image = "/images/cymbal.png";
+        addInstrumentLine(image, new Cymbal("/cymbal.wav"));
     }
 }
