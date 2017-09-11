@@ -3,6 +3,7 @@ package com.axxes.garageband.presenter;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
+import com.axxes.garageband.model.measures.Measure;
 import com.axxes.garageband.util.MusicXmlParser;
 import com.axxes.garageband.util.MusicXmlWriter;
 import javafx.animation.Animation;
@@ -11,7 +12,6 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,6 +37,7 @@ import org.springframework.stereotype.Controller;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +81,8 @@ public class Presenter {
     private Rectangle highLighter;
     private int highlighterPosition;
 
+    private int beats;
+
     private void createLoop() {
         if (this.loopTimeline != null) {
             this.loopTimeline.stop();
@@ -100,6 +103,7 @@ public class Presenter {
 
     @FXML
     protected void initialize() {
+        beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
         createBaseGrid();
         this.bpm = 180;
         bpmTextField.setText(String.valueOf(bpm));
@@ -117,7 +121,7 @@ public class Presenter {
     }
 
     private void stepHighlighter(){
-        if (highlighterPosition == 8){
+        if (highlighterPosition == beats){
             highlighterPosition = 0;
         }
         highLighter.setX(85 + (60*highlighterPosition));
@@ -137,14 +141,10 @@ public class Presenter {
     @FXML
     private void createBaseGrid() {
         grid.add(createLabel("Beat"), 0, 0);
-        grid.add(createLabel("1"), 1, 0);
-        grid.add(createLabel("2"), 2, 0);
-        grid.add(createLabel("3"), 3, 0);
-        grid.add(createLabel("4"), 4, 0);
-        grid.add(createLabel("1"), 5, 0);
-        grid.add(createLabel("2"), 6, 0);
-        grid.add(createLabel("3"), 7, 0);
-        grid.add(createLabel("4"), 8, 0);
+        for (int i = 1; i <= beats; i++) {
+            int currentBeat = ((i - 1) % 4) + 1;
+            grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
+        }
 
         grid.setBorder(Border.EMPTY);
     }
@@ -175,7 +175,7 @@ public class Presenter {
         Image image = new Image(instrument.getImage());
         grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < beats; i++) {
             Button button = new Button();
             ImageView imageView = new ImageView();
             imageView.setImage(image);
@@ -285,12 +285,12 @@ public class Presenter {
         addInstrumentLine(cymbal);
     }
 
-    public void playLoop(ActionEvent actionEvent) {
+    public void playLoop() {
         createLoop();
         this.loopTimeline.play();
     }
 
-    public void stopLoop(ActionEvent actionEvent) {
+    public void stopLoop() {
         this.loopTimeline.stop();
     }
 }
