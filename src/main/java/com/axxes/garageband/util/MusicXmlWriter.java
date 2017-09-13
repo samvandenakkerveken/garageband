@@ -21,7 +21,7 @@ import java.util.List;
 
 public class MusicXmlWriter {
 
-    public static boolean writeXMLFromDrumloop(Drumloop drumloop, String fileName) {
+    public static boolean writeXMLFromDrumloop(Drumloop drumloop, File file) {
         boolean succeeded = false;
 
         try {
@@ -65,7 +65,7 @@ public class MusicXmlWriter {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File("./drumloops/" + fileName + ".xml"));
+            StreamResult result = new StreamResult(file);
 
             transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");

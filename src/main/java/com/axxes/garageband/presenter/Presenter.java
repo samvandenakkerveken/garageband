@@ -12,10 +12,11 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -28,7 +29,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.log4j.Logger;
@@ -64,7 +64,7 @@ public class Presenter {
     private Timeline loopTimeline;
     @Autowired
     private Drumloop drumloop;
-    private int bpm;
+    private IntegerProperty bpm;
 
     @Autowired
     MusicXmlParser parser;
@@ -87,8 +87,8 @@ public class Presenter {
         if (this.loopTimeline != null) {
             this.loopTimeline.stop();
         }
-        bpm = Integer.parseInt(bpmTextField.getText());
-        int timeBetweenBeats = 60000 / this.bpm;
+        bpm.set(Integer.parseInt(bpmTextField.getText()));
+        int timeBetweenBeats = 60000 / this.bpm.get();
 
         this.loopTimeline = new Timeline(new KeyFrame(
                 Duration.millis(timeBetweenBeats),
@@ -103,10 +103,12 @@ public class Presenter {
 
     @FXML
     protected void initialize() {
-        beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
+        this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
         createBaseGrid();
-        this.bpm = 180;
-        bpmTextField.setText(String.valueOf(bpm));
+        this.bpm = new SimpleIntegerProperty();
+        this.bpm.bindBidirectional(drumloop.getBpm());
+        this.bpm.set(180);
+        this.bpmTextField.setText(String.valueOf(bpm.get()));
         createHighlighter();
         createLoop();
     }
@@ -209,33 +211,38 @@ public class Presenter {
 
     public void menuButtonSave() {
         final Stage dialog = new Stage();
-        dialog.initModality(Modality.APPLICATION_MODAL);
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.addRow(0, new Label("Filename"));
-        TextField textField = new TextField("drumloop");
-        gridPane.addRow(1, textField);
-        Button saveButton = new Button("Save");
-        saveButton.setOnAction(event -> saveFile(textField.getText(), dialog));
-        gridPane.addRow(2, saveButton);
-        Scene dialogScene = new Scene(gridPane, 200, 150);
-        dialog.setScene(dialogScene);
-        dialog.show();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File("drumloops"));
+        fileChooser.setTitle("Save music file");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
+        fileChooser.getExtensionFilters().add(filter);
+        fileChooser.setSelectedExtensionFilter(filter);
+        File file = fileChooser.showSaveDialog(dialog);
+        MusicXmlWriter.writeXMLFromDrumloop(drumloop, file);
+//        dialog.initModality(Modality.APPLICATION_MODAL);
+//        GridPane gridPane = new GridPane();
+//        gridPane.setAlignment(Pos.CENTER);
+//        gridPane.addRow(0, new Label("Filename"));
+//        TextField textField = new TextField("drumloop");
+//        gridPane.addRow(1, textField);
+//        Button saveButton = new Button("Save");
+//        saveButton.setOnAction(event -> saveFile(textField.getText(), dialog));
+//        gridPane.addRow(2, saveButton);
+//        Scene dialogScene = new Scene(gridPane, 200, 150);
+//        dialog.setScene(dialogScene);
+//        dialog.show();
 
     }
 
-    private void saveFile(String filename, Stage dialog) {
-        if (MusicXmlWriter.writeXMLFromDrumloop(drumloop, filename)) {
-            dialog.close();
-        }
-    }
 
     public void menuButtonLoad() {
         final Stage dialog = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("drumloops"));
         fileChooser.setTitle("Open music file");
-        fileChooser.getExtensionFilters();
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
+        fileChooser.getExtensionFilters().add(filter);
+        fileChooser.setSelectedExtensionFilter(filter);
 
         File file = fileChooser.showOpenDialog(dialog);
 

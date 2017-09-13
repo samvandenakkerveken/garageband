@@ -2,6 +2,8 @@ package com.axxes.garageband.model.loop;
 
 import com.axxes.garageband.model.instrument.Instrument;
 import com.axxes.garageband.model.measures.Measure;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -14,12 +16,13 @@ public class Drumloop implements Loop {
     private List<Measure> measures;
     private int currentMeasure;
     private int numberOfMeasures;
+    private IntegerProperty bpm;
 
     public Drumloop() {
         this.measures = new ArrayList<>();
         this.numberOfMeasures = 2;
         this.currentMeasure = 0;
-
+        this.bpm = new SimpleIntegerProperty();
         for (int i = 0; i < numberOfMeasures; i++) {
             this.measures.add(new Measure());
         }
@@ -72,5 +75,9 @@ public class Drumloop implements Loop {
 
     public void setCurrentMeasure(int currentMeasure) {
         this.currentMeasure = currentMeasure;
+    }
+
+    public IntegerProperty getBpm() {
+        return bpm;
     }
 }
