@@ -215,7 +215,7 @@ public class Presenter {
         fileChooser.setInitialDirectory(new File("drumloops"));
         fileChooser.setInitialFileName("drumloop.xml");
         fileChooser.setTitle("Save music file");
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml", "*.XML");
         fileChooser.getExtensionFilters().add(filter);
         fileChooser.setSelectedExtensionFilter(filter);
         File file = fileChooser.showSaveDialog(dialog);
@@ -230,9 +230,8 @@ public class Presenter {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("drumloops"));
         fileChooser.setTitle("Open music file");
-        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
-        FileChooser.ExtensionFilter filter2 = new FileChooser.ExtensionFilter("XML", "*.XML");
-        fileChooser.getExtensionFilters().addAll(filter, filter2);
+        FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml", ".XML");
+        fileChooser.getExtensionFilters().addAll(filter);
         fileChooser.setSelectedExtensionFilter(filter);
 
         File file = fileChooser.showOpenDialog(dialog);
