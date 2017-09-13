@@ -231,7 +231,8 @@ public class Presenter {
         fileChooser.setInitialDirectory(new File("drumloops"));
         fileChooser.setTitle("Open music file");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
-        fileChooser.getExtensionFilters().add(filter);
+        FileChooser.ExtensionFilter filter2 = new FileChooser.ExtensionFilter("XML", "*.XML");
+        fileChooser.getExtensionFilters().addAll(filter, filter2);
         fileChooser.setSelectedExtensionFilter(filter);
 
         File file = fileChooser.showOpenDialog(dialog);
