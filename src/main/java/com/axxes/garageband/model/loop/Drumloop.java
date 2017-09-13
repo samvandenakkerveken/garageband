@@ -80,4 +80,9 @@ public class Drumloop implements Loop {
     public IntegerProperty getBpm() {
         return bpm;
     }
+
+    public void setBpm(int bpm) {
+        this.bpm.set(bpm);
+    }
+
 }

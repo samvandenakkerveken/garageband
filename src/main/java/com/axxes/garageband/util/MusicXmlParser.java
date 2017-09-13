@@ -46,6 +46,11 @@ public class MusicXmlParser {
             Document doc = dBuilder.parse(file);
             doc.getDocumentElement().normalize();
 
+            Node drumloopNode = doc.getElementsByTagName("drumloop").item(0);
+            Element bpmElement = (Element) drumloopNode;
+            drumloop.setBpm(Integer.parseInt(bpmElement.getAttribute("bpm")));
+            System.out.println("Drumloop BPM: " + bpmElement.getAttribute("bpm"));
+
             // Measures
             NodeList nodeMeasures = doc.getElementsByTagName("measure");
             for (int i = 0; i < nodeMeasures.getLength(); i++) {

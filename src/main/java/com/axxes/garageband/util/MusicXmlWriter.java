@@ -32,6 +32,7 @@ public class MusicXmlWriter {
             Document doc = db.newDocument();
             Element rootElement = doc.createElement("drumloop");
             doc.appendChild(rootElement);
+            rootElement.setAttribute("bpm", String.valueOf(drumloop.getBpm().get()));
 
             // Measures
             List<Measure> measures = drumloop.getMeasures();
