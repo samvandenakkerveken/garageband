@@ -66,4 +66,8 @@ public class Measure {
     public int getCurrentBeat() {
         return currentBeat;
     }
+
+    public int getBeatsPerMeasure() {
+        return beatsPerMeasure;
+    }
 }
