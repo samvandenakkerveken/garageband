@@ -70,4 +70,8 @@ public class Measure {
     public int getBeatsPerMeasure() {
         return beatsPerMeasure;
     }
+
+    public void setCurrentBeat(int currentBeat) {
+        this.currentBeat = currentBeat;
+    }
 }

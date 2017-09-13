@@ -19,6 +19,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -84,8 +85,12 @@ public class Presenter {
     private Rectangle highLighter;
     private int highlighterPosition;
 
+    private Slider slider;
+
     private int beats;
     private int beatsPerMeasure;
+
+    private boolean programaticSliderChange;
 
     private void createLoop() {
         if (this.loopTimeline != null) {
@@ -97,14 +102,15 @@ public class Presenter {
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
+                    stepHighlighterAndSlider();
                     this.drumloop.step();
-                    stepHighlighter();
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
     @FXML
     protected void initialize() {
+        this.programaticSliderChange = false;
         this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
         this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
         this.bpm = new SimpleIntegerProperty();
@@ -112,7 +118,54 @@ public class Presenter {
         Bindings.bindBidirectional(this.bpmTextField.textProperty(), this.bpm, new NumberStringConverter());
         createBaseGrid();
         createHighlighter();
+        createSlider();
         createLoop();
+    }
+
+    private void createSlider(){
+        this.slider = new Slider(0, this.beats - 1, this.highlighterPosition);
+        this.slider.setShowTickMarks(true);
+        this.slider.setBlockIncrement(1);
+        this.slider.setSnapToTicks(true);
+        this.slider.setMajorTickUnit(1);
+        this.slider.setMinorTickCount(0);
+        this.slider.setLayoutX(105);
+        this.slider.setLayoutY(40);
+        this.slider.setPrefWidth(this.beats*60 - 40);
+        this.slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if(!programaticSliderChange){
+                changeHighlighterPosition(newValue.intValue());
+            }
+        });
+
+        root.getChildren().add(slider);
+    }
+
+    private void changeHighlighterPosition(int position){
+        this.highlighterPosition = position;
+        int measureCount = position / this.beatsPerMeasure;
+        int beatCount = position % this.beatsPerMeasure;
+        drumloop.setCurrentMeasure(measureCount);
+        drumloop.getMeasures().get(measureCount).setCurrentBeat(beatCount);
+        this.highLighter.setX(85 + (60*this.highlighterPosition));
+    }
+
+    private void createBaseGrid() {
+        this.grid.add(createLabel("Beat"), 0, 0);
+        for (int i = 1; i <= this.beats; i++) {
+            int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
+            this.grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
+        }
+
+        this.grid.setBorder(Border.EMPTY);
+    }
+
+    private Label createLabel(String text) {
+        Label label = new Label(text);
+        label.setAlignment(Pos.CENTER);
+        label.setPrefWidth(60);
+        label.setPrefHeight(30);
+        return label;
     }
 
     private void createHighlighter() {
@@ -124,33 +177,16 @@ public class Presenter {
         this.root.getChildren().add(highLighter);
     }
 
-    private void stepHighlighter(){
+    private void stepHighlighterAndSlider(){
         if (this.highlighterPosition == this.beats){
             this.highlighterPosition = 0;
         }
         this.highLighter.setX(85 + (60*this.highlighterPosition));
+        programaticSliderChange = true;
+        this.slider.setValue(this.highlighterPosition);
+        programaticSliderChange = false;
         this.highlighterPosition++;
 
-    }
-
-    @FXML
-    private Label createLabel(String text) {
-        Label label = new Label(text);
-        label.setAlignment(Pos.CENTER);
-        label.setPrefWidth(60);
-        label.setPrefHeight(30);
-        return label;
-    }
-
-    @FXML
-    private void createBaseGrid() {
-        this.grid.add(createLabel("Beat"), 0, 0);
-        for (int i = 1; i <= this.beats; i++) {
-            int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
-            this.grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
-        }
-
-        this.grid.setBorder(Border.EMPTY);
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
@@ -262,7 +298,7 @@ public class Presenter {
         enableAddInstrumentButton();
         Set<Instrument> instrumentSet = this.drumloop.getInstrumentSet();
         for (Instrument i : instrumentSet) {
-            this.addInstrumentLine(i);
+            addInstrumentLine(i);
         }
     }
 
