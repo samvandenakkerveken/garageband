@@ -1,10 +1,11 @@
-package com.axxes.garageband.loop;
+package com.axxes.garageband.UT;
 
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
-import com.axxes.garageband.presenter.Presenter;
+import com.axxes.garageband.util.MusicXmlParser;
+import com.axxes.garageband.util.MusicXmlWriter;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,15 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class GaragebandLoopTest {
+public class XMLDrumloopTest {
 
     @Autowired
-    private Presenter presenter;
+    private MusicXmlWriter writer;
+    @Autowired
+    private MusicXmlParser parser;
+    @Autowired
     private Drumloop drumloop;
+    private Drumloop testLoop;
 
     @Before
     public void setup() {
@@ -62,13 +70,23 @@ public class GaragebandLoopTest {
         measure2.addBeatOnLocation(beat7, 2);
         measure2.addBeatOnLocation(beat8, 3);
 
-        this.drumloop = new Drumloop();
-        this.drumloop.setMeasures(Arrays.asList(measure1, measure2));
+        this.testLoop = new Drumloop();
+        this.testLoop.setBpm(330);
+        this.testLoop.setMeasures(Arrays.asList(measure1, measure2));
     }
 
     @Test
-    public void drumLoopTest() {
-//        this.presenter.startLoop(60, this.drumloop);
+    public void writeDrumloopXml() {
+        File file = new File("src/test/resources/test.xml");
+        assertThat(writer.writeXMLFromDrumloop(this.testLoop, file)).isTrue();
+    }
+
+    @Test
+    public void parseDrumloopXml() {
+        File file = new File("src/test/resources/testloop.xml");
+        parser.parserDrumloopFromXml(file);
+        int bpm = this.drumloop.getBpm().get();
+        assertThat(bpm).isEqualTo(330);
     }
 
 }
