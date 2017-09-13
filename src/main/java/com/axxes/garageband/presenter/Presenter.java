@@ -244,6 +244,7 @@ public class Presenter {
         deleteInstrumentLines();
         if (file != null) {
             parser.parserDrumloopFromXml(file);
+            createInstrumentLines();
         }
     }
 
@@ -257,8 +258,9 @@ public class Presenter {
         this.grid.getChildren().removeAll(deleteNodes);
     }
 
-    public void createInstrumentLines(Set<Instrument> instrumentSet) {
+    public void createInstrumentLines() {
         enableAddInstrumentButton();
+        Set<Instrument> instrumentSet = this.drumloop.getInstrumentSet();
         for (Instrument i : instrumentSet) {
             this.addInstrumentLine(i);
         }

@@ -1,6 +1,7 @@
 package com.axxes.garageband.model.loop;
 
 import com.axxes.garageband.model.instrument.Instrument;
+import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -8,7 +9,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class Drumloop implements Loop {
@@ -87,5 +90,16 @@ public class Drumloop implements Loop {
 
     public int getBeatsPerMeasure() {
         return measures.get(0).getBeatsPerMeasure();
+    }
+
+    public Set<Instrument> getInstrumentSet() {
+        Set<Instrument> instrumentSet = new HashSet<>();
+        for (Measure measure : measures) {
+            measure.getBeats()
+                    .stream()
+                    .map(Beat::getInstruments)
+                    .forEach(instrumentSet::addAll);
+        }
+        return instrumentSet;
     }
 }
