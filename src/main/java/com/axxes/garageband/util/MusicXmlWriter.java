@@ -4,6 +4,7 @@ import com.axxes.garageband.model.instrument.Instrument;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -19,10 +20,11 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.util.List;
 
+@Component
 public class MusicXmlWriter {
 
-    public static boolean writeXMLFromDrumloop(Drumloop drumloop, File file) {
-        boolean succeeded = false;
+    public boolean writeXMLFromDrumloop(Drumloop drumloop, File file) {
+        boolean isWritten = false;
 
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -73,13 +75,13 @@ public class MusicXmlWriter {
 
             transformer.transform(source, result);
 
-            succeeded = true;
+            isWritten = true;
 
         } catch (ParserConfigurationException | TransformerException e) {
             e.printStackTrace();
         }
 
-        return succeeded;
+        return isWritten;
 
     }
 

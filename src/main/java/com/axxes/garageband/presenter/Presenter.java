@@ -68,6 +68,8 @@ public class Presenter {
 
     @Autowired
     MusicXmlParser parser;
+    @Autowired
+    MusicXmlWriter writer;
 
     @Autowired
     private Kick kick;
@@ -220,7 +222,7 @@ public class Presenter {
         fileChooser.setSelectedExtensionFilter(filter);
         File file = fileChooser.showSaveDialog(dialog);
         if (file != null) {
-            MusicXmlWriter.writeXMLFromDrumloop(drumloop, file);
+            writer.writeXMLFromDrumloop(drumloop, file);
         }
     }
 

@@ -15,8 +15,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class MusicXmlParser {
@@ -31,14 +29,11 @@ public class MusicXmlParser {
     private Snare snare;
     @Autowired
     private Drumloop drumloop;
-    @Autowired
-    private Presenter presenter;
 
     public void parserDrumloopFromXml(File file) {
         // Empty the current drumloop.
         drumloop.setMeasures(Arrays.asList(new Measure(), new Measure()));
         drumloop.setCurrentMeasure(0);
-        Set<Instrument> instrumentSet = new HashSet<>();
 
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -73,13 +68,10 @@ public class MusicXmlParser {
                             System.out.println("\t\tInstrument name: " + instruments.item(k).getTextContent());
                             Instrument instrument = getInstrument(instruments.item(k).getTextContent());
                             drumloop.addInstrument(instrument, i, j);
-                            instrumentSet.add(instrument);
                         }
                     }
                 }
             }
-
-            presenter.createInstrumentLines(instrumentSet);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,4 +1,4 @@
-package com.axxes.garageband.instruments;
+package com.axxes.garageband.UT;
 
 import kuusisto.tinysound.Sound;
 import kuusisto.tinysound.TinySound;
@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class InstrumentTest {
+public class SoundTest {
 
     @Before
     public void setup(){
