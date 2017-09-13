@@ -213,25 +213,15 @@ public class Presenter {
         final Stage dialog = new Stage();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(new File("drumloops"));
+        fileChooser.setInitialFileName("drumloop.xml");
         fileChooser.setTitle("Save music file");
         FileChooser.ExtensionFilter filter = new FileChooser.ExtensionFilter("xml", "*.xml");
         fileChooser.getExtensionFilters().add(filter);
         fileChooser.setSelectedExtensionFilter(filter);
         File file = fileChooser.showSaveDialog(dialog);
-        MusicXmlWriter.writeXMLFromDrumloop(drumloop, file);
-//        dialog.initModality(Modality.APPLICATION_MODAL);
-//        GridPane gridPane = new GridPane();
-//        gridPane.setAlignment(Pos.CENTER);
-//        gridPane.addRow(0, new Label("Filename"));
-//        TextField textField = new TextField("drumloop");
-//        gridPane.addRow(1, textField);
-//        Button saveButton = new Button("Save");
-//        saveButton.setOnAction(event -> saveFile(textField.getText(), dialog));
-//        gridPane.addRow(2, saveButton);
-//        Scene dialogScene = new Scene(gridPane, 200, 150);
-//        dialog.setScene(dialogScene);
-//        dialog.show();
-
+        if (file != null) {
+            MusicXmlWriter.writeXMLFromDrumloop(drumloop, file);
+        }
     }
 
 
@@ -250,7 +240,9 @@ public class Presenter {
         highLighter.setX(85);
         highLighter.setHeight(30);
         deleteInstrumentLines();
-        parser.parserDrumloopFromXml(file);
+        if (file != null) {
+            parser.parserDrumloopFromXml(file);
+        }
     }
 
     private void deleteInstrumentLines() {
