@@ -31,6 +31,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.util.converter.NumberStringConverter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -84,12 +85,12 @@ public class Presenter {
     private int highlighterPosition;
 
     private int beats;
+    private int beatsPerMeasure;
 
     private void createLoop() {
         if (this.loopTimeline != null) {
             this.loopTimeline.stop();
         }
-        bpm.set(Integer.parseInt(bpmTextField.getText()));
         int timeBetweenBeats = 60000 / this.bpm.get();
 
         this.loopTimeline = new Timeline(new KeyFrame(
@@ -98,7 +99,6 @@ public class Presenter {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
                     this.drumloop.step();
                     stepHighlighter();
-                    // UI handling
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
@@ -106,30 +106,30 @@ public class Presenter {
     @FXML
     protected void initialize() {
         this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
-        createBaseGrid();
+        this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
         this.bpm = new SimpleIntegerProperty();
         this.bpm.bindBidirectional(drumloop.getBpm());
-        this.bpm.set(180);
-        this.bpmTextField.setText(String.valueOf(bpm.get()));
+        Bindings.bindBidirectional(this.bpmTextField.textProperty(), this.bpm, new NumberStringConverter());
+        createBaseGrid();
         createHighlighter();
         createLoop();
     }
 
     private void createHighlighter() {
-        highLighter = new Rectangle(85, 65, 60, 30);
-        highlighterPosition = 0;
-        highLighter.setMouseTransparent(true);
-        highLighter.setFill(Color.RED);
-        highLighter.setOpacity(0.5);
-        root.getChildren().add(highLighter);
+        this.highLighter = new Rectangle(85, 65, 60, 30);
+        this.highlighterPosition = 0;
+        this.highLighter.setMouseTransparent(true);
+        this.highLighter.setFill(Color.RED);
+        this.highLighter.setOpacity(0.5);
+        this.root.getChildren().add(highLighter);
     }
 
     private void stepHighlighter(){
-        if (highlighterPosition == beats){
-            highlighterPosition = 0;
+        if (this.highlighterPosition == this.beats){
+            this.highlighterPosition = 0;
         }
-        highLighter.setX(85 + (60*highlighterPosition));
-        highlighterPosition++;
+        this.highLighter.setX(85 + (60*this.highlighterPosition));
+        this.highlighterPosition++;
 
     }
 
@@ -144,42 +144,42 @@ public class Presenter {
 
     @FXML
     private void createBaseGrid() {
-        grid.add(createLabel("Beat"), 0, 0);
-        for (int i = 1; i <= beats; i++) {
-            int currentBeat = ((i - 1) % 4) + 1;
-            grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
+        this.grid.add(createLabel("Beat"), 0, 0);
+        for (int i = 1; i <= this.beats; i++) {
+            int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
+            this.grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
         }
 
-        grid.setBorder(Border.EMPTY);
+        this.grid.setBorder(Border.EMPTY);
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
 
         if (instrument.getClass().equals(HiHat.class)) {
-            imageHihat.setDisable(true);
+            this.imageHihat.setDisable(true);
         } else if (instrument.getClass().equals(Snare.class)) {
-            imageSnare.setDisable(true);
+            this.imageSnare.setDisable(true);
         } else if (instrument.getClass().equals(Kick.class)) {
-            imageKick.setDisable(true);
+            this.imageKick.setDisable(true);
         } else if (instrument.getClass().equals(Cymbal.class)) {
-            imageCymbal.setDisable(true);
+            this.imageCymbal.setDisable(true);
         }
     }
 
     private void enableAddInstrumentButton() {
-        imageHihat.setDisable(false);
-        imageSnare.setDisable(false);
-        imageKick.setDisable(false);
-        imageCymbal.setDisable(false);
+        this.imageHihat.setDisable(false);
+        this.imageSnare.setDisable(false);
+        this.imageKick.setDisable(false);
+        this.imageCymbal.setDisable(false);
     }
 
     private void addInstrumentLine(Instrument instrument) {
-        highLighter.setHeight(highLighter.getHeight()+50);
+        this.highLighter.setHeight(this.highLighter.getHeight()+50);
         disableAddInstrumentButton(instrument);
         Image image = new Image(instrument.getImage());
-        grid.addRow(gridRow, createLabel(instrument.getClass().getSimpleName()));
+        this.grid.addRow(this.gridRow, createLabel(instrument.getClass().getSimpleName()));
 
-        for (int i = 0; i < beats; i++) {
+        for (int i = 0; i < this.beats; i++) {
             Button button = new Button();
             ImageView imageView = new ImageView();
             imageView.setImage(image);
@@ -191,23 +191,23 @@ public class Presenter {
             button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
             bindBeatToButton(instrument, button, measureCount, beatCount);
 
-            grid.addRow(gridRow, button);
+            this.grid.addRow(this.gridRow, button);
         }
-        gridRow++;
+        this.gridRow++;
     }
 
     private void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
-        Beat beat = drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
+        Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
         BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
         button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
     }
 
 
     private void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
-        if (drumloop.hasInstrument(instrument, measureCount, beatCount)) {
-            drumloop.removeInstrument(instrument, measureCount, beatCount);
+        if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
+            this.drumloop.removeInstrument(instrument, measureCount, beatCount);
         } else {
-            drumloop.addInstrument(instrument, measureCount, beatCount);
+            this.drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
 
@@ -238,9 +238,9 @@ public class Presenter {
 
         File file = fileChooser.showOpenDialog(dialog);
 
-        highlighterPosition = 0;
-        highLighter.setX(85);
-        highLighter.setHeight(30);
+        this.highlighterPosition = 0;
+        this.highLighter.setX(85);
+        this.highLighter.setHeight(30);
         deleteInstrumentLines();
         if (file != null) {
             parser.parserDrumloopFromXml(file);
@@ -249,12 +249,12 @@ public class Presenter {
 
     private void deleteInstrumentLines() {
         List<Node> deleteNodes = new ArrayList<>();
-        for (Node node : grid.getChildren()) {
+        for (Node node : this.grid.getChildren()) {
             if (GridPane.getRowIndex(node) > 0) {
                 deleteNodes.add(node);
             }
         }
-        grid.getChildren().removeAll(deleteNodes);
+        this.grid.getChildren().removeAll(deleteNodes);
     }
 
     public void createInstrumentLines(Set<Instrument> instrumentSet) {

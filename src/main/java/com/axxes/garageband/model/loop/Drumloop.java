@@ -22,7 +22,7 @@ public class Drumloop implements Loop {
         this.measures = new ArrayList<>();
         this.numberOfMeasures = 2;
         this.currentMeasure = 0;
-        this.bpm = new SimpleIntegerProperty();
+        this.bpm = new SimpleIntegerProperty(120);
         for (int i = 0; i < numberOfMeasures; i++) {
             this.measures.add(new Measure());
         }
@@ -85,4 +85,7 @@ public class Drumloop implements Loop {
         this.bpm.set(bpm);
     }
 
+    public int getBeatsPerMeasure() {
+        return measures.get(0).getBeatsPerMeasure();
+    }
 }
