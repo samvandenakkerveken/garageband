@@ -43,7 +43,6 @@ public class Drumloop implements Loop {
                 currentMeasure++;
             }
         }
-
         measure.playMeasure();
     }
 
@@ -102,4 +101,5 @@ public class Drumloop implements Loop {
         }
         return instrumentSet;
     }
+
 }

@@ -23,6 +23,7 @@ import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
@@ -42,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import static org.lwjgl.openal.EXTEfx.AL_EFFECT_ECHO;
 
 @Controller
 public class Presenter {
@@ -120,6 +123,7 @@ public class Presenter {
         createHighlighter();
         createSlider();
         createLoop();
+
     }
 
     private void createSlider(){
@@ -225,6 +229,11 @@ public class Presenter {
             int measureCount = i / 4;
             int beatCount = i % 4;
             button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
+            button.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.SECONDARY){
+                    instrumentAddEcho(instrument, measureCount, beatCount);
+                }
+            });
             bindBeatToButton(instrument, button, measureCount, beatCount);
 
             this.grid.addRow(this.gridRow, button);
@@ -232,12 +241,10 @@ public class Presenter {
         this.gridRow++;
     }
 
-    private void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
-        Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
-        BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
-        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
-    }
+    private void instrumentAddEcho(Instrument instrument, int measureCount, int beatcount){
+        this.drumloop.getMeasures().get(measureCount).getBeats().get(beatcount).setAudioEffect(instrument, AL_EFFECT_ECHO);
 
+    }
 
     private void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
         if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
@@ -246,6 +253,13 @@ public class Presenter {
             this.drumloop.addInstrument(instrument, measureCount, beatCount);
         }
     }
+
+    private void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
+        Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
+        BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
+        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
+    }
+
 
     public void menuButtonSave() {
         final Stage dialog = new Stage();
@@ -305,6 +319,10 @@ public class Presenter {
     //UI event handlers
 
     public void exit() {
+       kick.shutdownExecutor();
+       cymbal.shutdownExecutor();
+       hiHat.shutdownExecutor();
+       snare.shutdownExecutor();
         Platform.exit();
     }
 

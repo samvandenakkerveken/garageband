@@ -74,4 +74,5 @@ public class Measure {
     public void setCurrentBeat(int currentBeat) {
         this.currentBeat = currentBeat;
     }
+
 }

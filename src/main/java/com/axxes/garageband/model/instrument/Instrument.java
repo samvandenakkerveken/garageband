@@ -5,7 +5,10 @@ import org.springframework.stereotype.Component;
 @Component
 public interface Instrument {
 
-    void play();
+    void play(int audioEffect);
 
     String getImage();
+
+    void shutdownExecutor();
+
 }
