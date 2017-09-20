@@ -323,7 +323,7 @@ public class Presenter {
        cymbal.shutdownExecutor();
        hiHat.shutdownExecutor();
        snare.shutdownExecutor();
-        Platform.exit();
+       Platform.exit();
     }
 
     public void imageKickPressed() {

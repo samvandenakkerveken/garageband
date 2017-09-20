@@ -1,6 +1,7 @@
 package com.axxes.garageband;
 
 
+import com.axxes.garageband.presenter.Presenter;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -32,6 +33,8 @@ public class GaragebandApplication extends Application {
         Parent root = fxmlLoader.load();
 
         primaryStage.setScene(new Scene(root));
+        Presenter presenter = fxmlLoader.getController();
+        primaryStage.setOnHidden(event -> presenter.exit());
         primaryStage.show();
     }
 }
