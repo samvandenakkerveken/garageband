@@ -1,11 +1,13 @@
 package com.axxes.garageband.model.loop;
 
+import com.axxes.garageband.Audio.effects.NoEffect;
 import com.axxes.garageband.model.instrument.Instrument;
 import com.axxes.garageband.model.measures.Beat;
 import com.axxes.garageband.model.measures.Measure;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public class Drumloop implements Loop {
     private int currentMeasure;
     private int numberOfMeasures;
     private IntegerProperty bpm;
+    @Autowired
+    private NoEffect noEffect;
 
     public Drumloop() {
         this.measures = new ArrayList<>();
@@ -55,7 +59,7 @@ public class Drumloop implements Loop {
     }
 
     public void addInstrument(Instrument instrument, int measureCount, int beatCount) {
-        measures.get(measureCount).addInstrument(instrument, beatCount);
+        measures.get(measureCount).addInstrument(instrument, beatCount, noEffect);
     }
 
     public void removeInstrument(Instrument instrument, int measureCount, int beatCount) {

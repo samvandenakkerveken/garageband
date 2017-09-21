@@ -1,5 +1,6 @@
 package com.axxes.garageband.Audio;
 
+import com.axxes.garageband.Audio.effects.Effect;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
@@ -15,49 +16,50 @@ public class AudioDevice {
 
     private long device;
     private long context;
-    private int bufferPointer;
-    private int sourcePointer;
-    private int effect;
-    private int effectSlot;
 
     public AudioDevice(){
-
+        init();
     }
 
-    public void init(){
+    private void init(){
         device = alcOpenDevice(alcGetString(0, ALC_DEFAULT_DEVICE_SPECIFIER));
 
         int[] attributes = {0};
         context = alcCreateContext(device, attributes);
-        alcMakeContextCurrent(context);
         ALCCapabilities alcCapabilities = ALC.createCapabilities(device);
+        alcMakeContextCurrent(context);
         AL.createCapabilities(alcCapabilities);
 
     }
 
-    public void createBuffer(String soundResource){
-        bufferPointer = alGenBuffers();
+    public int createBuffer(String soundResource){
+        int bufferPointer = alGenBuffers();
         WaveData waveData = WaveData.create(soundResource);
         alBufferData(bufferPointer, waveData.format, waveData.data, waveData.samplerate);
         waveData.dispose();
+        return bufferPointer;
     }
 
-    public void play(float volume, int effectType){
-        alDeleteSources(sourcePointer);
-        alDeleteEffects(effect);
-        alDeleteAuxiliaryEffectSlots(effectSlot);
-
-        sourcePointer = alGenSources();
-
-        effect = alGenEffects();
-        effectSlot = alGenAuxiliaryEffectSlots();
-
-        alEffecti(effect, AL_EFFECT_TYPE, effectType);
-
-        alAuxiliaryEffectSloti(effectSlot, AL_EFFECTSLOT_EFFECT, effect);
-
+    public int createSource(int bufferPointer){
+        int sourcePointer = alGenSources();
         alSourcei(sourcePointer, AL_BUFFER, bufferPointer);
-        alSource3i(sourcePointer, AL_AUXILIARY_SEND_FILTER, effectSlot, 0, AL_FILTER_NULL);
+        return sourcePointer;
+    }
+
+    public int createEffect(int effectType){
+       int effect = alGenEffects();
+       alEffecti(effect, AL_EFFECT_TYPE, effectType);
+       return effect;
+    }
+
+    public int createEffectSlot(int effect){
+        int effectSlot = alGenAuxiliaryEffectSlots();
+        alAuxiliaryEffectSloti(effectSlot, AL_EFFECTSLOT_EFFECT, effect);
+        return effectSlot;
+    }
+
+    public void play(int sourcePointer, float volume, Effect effect){
+        alSource3i(sourcePointer, AL_AUXILIARY_SEND_FILTER, effect.getEffectSlot(), 0, AL_FILTER_NULL);
         alSourcef(sourcePointer, AL_GAIN, volume);
 
         alSourcePlay(sourcePointer);
@@ -65,7 +67,6 @@ public class AudioDevice {
     }
 
     public void destroy() {
-        alDeleteBuffers(bufferPointer);
         alcDestroyContext(context);
         alcCloseDevice(device);
     }

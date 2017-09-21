@@ -1,5 +1,6 @@
 package com.axxes.garageband.UT;
 
+import com.axxes.garageband.Audio.effects.NoEffect;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
@@ -29,6 +30,8 @@ public class XMLDrumloopTest {
     @Autowired
     private Drumloop drumloop;
     private Drumloop testLoop;
+    @Autowired
+    private NoEffect noEffect;
 
     @Before
     public void setup() {
@@ -46,16 +49,16 @@ public class XMLDrumloopTest {
         Beat beat7 = new Beat();
         Beat beat8 = new Beat();
 
-        beat1.addInstrument(hihat);
-        beat2.addInstrument(hihat);
-        beat3.addInstrument(hihat);
-        beat4.addInstrument(hihat);
-        beat6.addInstrument(hihat);
-        beat7.addInstrument(hihat);
-        beat8.addInstrument(hihat);
-        beat1.addInstrument(kick);
-        beat5.addInstrument(snare);
-        beat5.addInstrument(cymbal);
+        beat1.addInstrument(hihat, noEffect);
+        beat2.addInstrument(hihat, noEffect);
+        beat3.addInstrument(hihat, noEffect);
+        beat4.addInstrument(hihat, noEffect);
+        beat6.addInstrument(hihat, noEffect);
+        beat7.addInstrument(hihat, noEffect);
+        beat8.addInstrument(hihat, noEffect);
+        beat1.addInstrument(kick, noEffect);
+        beat5.addInstrument(snare, noEffect);
+        beat5.addInstrument(cymbal, noEffect);
 
         Measure measure1 = new Measure();
         Measure measure2 = new Measure();

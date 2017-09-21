@@ -1,5 +1,10 @@
 package com.axxes.garageband.presenter;
 
+import com.axxes.garageband.Audio.AudioDevice;
+import com.axxes.garageband.Audio.effects.Echo;
+import com.axxes.garageband.Audio.effects.Effect;
+import com.axxes.garageband.Audio.effects.NoEffect;
+import com.axxes.garageband.Audio.effects.Reverb;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
@@ -17,13 +22,9 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
@@ -43,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-
-import static org.lwjgl.openal.EXTEfx.AL_EFFECT_ECHO;
 
 @Controller
 public class Presenter {
@@ -77,6 +76,9 @@ public class Presenter {
     MusicXmlWriter writer;
 
     @Autowired
+    private AudioDevice audioDevice;
+
+    @Autowired
     private Kick kick;
     @Autowired
     private Cymbal cymbal;
@@ -84,6 +86,13 @@ public class Presenter {
     private HiHat hiHat;
     @Autowired
     private Snare snare;
+
+    @Autowired
+    private Echo echoEffect;
+    @Autowired
+    private NoEffect noEffect;
+    @Autowired
+    private Reverb reverbEffect;
 
     private Rectangle highLighter;
     private int highlighterPosition;
@@ -123,8 +132,8 @@ public class Presenter {
         createHighlighter();
         createSlider();
         createLoop();
-
     }
+
 
     private void createSlider(){
         this.slider = new Slider(0, this.beats - 1, this.highlighterPosition);
@@ -228,23 +237,40 @@ public class Presenter {
             button.setGraphic(imageView);
             int measureCount = i / 4;
             int beatCount = i % 4;
-            button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
-            button.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.SECONDARY){
-                    instrumentAddEcho(instrument, measureCount, beatCount);
-                }
+
+            ContextMenu effectsMenu = new ContextMenu();
+
+            MenuItem noEffectItem = new MenuItem("No effect");
+            noEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, noEffect));
+
+            MenuItem echoEffectItem = new MenuItem("Echo");
+            echoEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, echoEffect));
+
+            MenuItem reverbEffectItem = new MenuItem("Reverb");
+            reverbEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, reverbEffect));
+
+            effectsMenu.getItems().addAll(noEffectItem, echoEffectItem, reverbEffectItem);
+            button.setContextMenu(effectsMenu);
+
+            button.setOnAction(event -> {
+                instrumentToggle(instrument, measureCount, beatCount);
             });
+
             bindBeatToButton(instrument, button, measureCount, beatCount);
 
-            this.grid.addRow(this.gridRow, button);
+            this.grid.add(button, i + 1, this.gridRow);
         }
         this.gridRow++;
     }
 
-    private void instrumentAddEcho(Instrument instrument, int measureCount, int beatcount){
-        this.drumloop.getMeasures().get(measureCount).getBeats().get(beatcount).setAudioEffect(instrument, AL_EFFECT_ECHO);
-
+    private void instrumentAddEffect(Instrument instrument, int measureCount, int beatCount, Effect effect) {
+        this.drumloop.getMeasures()
+                .get(measureCount)
+                .getBeats()
+                .get(beatCount)
+                .setAudioEffect(instrument, effect);
     }
+
 
     private void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
         if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
@@ -275,7 +301,6 @@ public class Presenter {
             writer.writeXMLFromDrumloop(drumloop, file);
         }
     }
-
 
     public void menuButtonLoad() {
         final Stage dialog = new Stage();
@@ -308,7 +333,7 @@ public class Presenter {
         this.grid.getChildren().removeAll(deleteNodes);
     }
 
-    public void createInstrumentLines() {
+    private void createInstrumentLines() {
         enableAddInstrumentButton();
         Set<Instrument> instrumentSet = this.drumloop.getInstrumentSet();
         for (Instrument i : instrumentSet) {
@@ -316,15 +341,17 @@ public class Presenter {
         }
     }
 
-    //UI event handlers
 
     public void exit() {
        kick.shutdownExecutor();
        cymbal.shutdownExecutor();
        hiHat.shutdownExecutor();
        snare.shutdownExecutor();
+       audioDevice.destroy();
        Platform.exit();
     }
+
+    //UI event handlers
 
     public void imageKickPressed() {
         addInstrumentLine(kick);

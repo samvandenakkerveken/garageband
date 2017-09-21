@@ -1,14 +1,46 @@
 package com.axxes.garageband.model.instrument;
 
+import com.axxes.garageband.Audio.AudioDevice;
+import com.axxes.garageband.Audio.effects.Effect;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 @Component
-public interface Instrument {
+public class Instrument {
 
-    void play(int audioEffect);
+    protected String soundResource;
+    protected String image;
+    protected float volume;
+    protected int bufferPointer;
+    protected int sourcePointer;
 
-    String getImage();
+    @Autowired
+    protected AudioDevice audioDevice;
+    protected ExecutorService executor;
 
-    void shutdownExecutor();
+    public Instrument(){
+        executor = Executors.newSingleThreadExecutor();
+    }
+
+
+    public void play(Effect effect) {
+        Logger.getLogger(this.getClass()).info(this.getClass().getSimpleName() + " plays sound.");
+
+        Runnable playTask = () -> this.audioDevice.play(sourcePointer, volume, effect);
+        executor.execute(playTask);
+
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void shutdownExecutor() {
+        executor.shutdown();
+    }
 
 }

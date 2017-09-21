@@ -1,5 +1,6 @@
 package com.axxes.garageband.model.measures;
 
+import com.axxes.garageband.Audio.effects.Effect;
 import com.axxes.garageband.model.instrument.Instrument;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -50,8 +51,8 @@ public class Measure {
         this.beats = beats;
     }
 
-    public void addInstrument(Instrument instrument, int beatCount) {
-        beats.get(beatCount).addInstrument(instrument);
+    public void addInstrument(Instrument instrument, int beatCount, Effect effect) {
+        beats.get(beatCount).addInstrument(instrument, effect);
     }
 
     public void removeInstrument(Instrument instrument, int beatCount) {
