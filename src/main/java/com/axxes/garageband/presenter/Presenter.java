@@ -1,10 +1,7 @@
 package com.axxes.garageband.presenter;
 
 import com.axxes.garageband.Audio.AudioDevice;
-import com.axxes.garageband.Audio.effects.Echo;
-import com.axxes.garageband.Audio.effects.Effect;
-import com.axxes.garageband.Audio.effects.NoEffect;
-import com.axxes.garageband.Audio.effects.Reverb;
+import com.axxes.garageband.Audio.effects.*;
 import com.axxes.garageband.model.instrument.*;
 import com.axxes.garageband.model.loop.Drumloop;
 import com.axxes.garageband.model.measures.Beat;
@@ -65,44 +62,52 @@ public class Presenter {
     @FXML
     Pane root;
 
-    private Timeline loopTimeline;
-    @Autowired
-    private Drumloop drumloop;
-    private IntegerProperty bpm;
-
-    @Autowired
-    MusicXmlParser parser;
-    @Autowired
-    MusicXmlWriter writer;
-
-    @Autowired
-    private AudioDevice audioDevice;
-
-    @Autowired
-    private Kick kick;
-    @Autowired
-    private Cymbal cymbal;
-    @Autowired
-    private HiHat hiHat;
-    @Autowired
-    private Snare snare;
-
-    @Autowired
-    private Echo echoEffect;
-    @Autowired
-    private NoEffect noEffect;
-    @Autowired
-    private Reverb reverbEffect;
-
     private Rectangle highLighter;
     private int highlighterPosition;
 
     private Slider slider;
+    private boolean programmaticSliderChange;
 
+    private final MusicXmlParser parser;
+    private final MusicXmlWriter writer;
+
+    private Timeline loopTimeline;
+    private IntegerProperty bpm;
     private int beats;
     private int beatsPerMeasure;
 
-    private boolean programaticSliderChange;
+    private final AudioDevice audioDevice;
+
+    private final Drumloop drumloop;
+    private final Kick kick;
+    private final Cymbal cymbal;
+    private final HiHat hiHat;
+    private final Snare snare;
+
+    private final Echo echoEffect;
+    private final NoEffect noEffect;
+    private final Reverb reverbEffect;
+    private final RingModulator ringModulatorEffect;
+    private final Flanger flangerEffect;
+    private final Distortion distortionEffect;
+
+    @Autowired
+    public Presenter(Drumloop drumloop, MusicXmlParser parser, MusicXmlWriter writer, AudioDevice audioDevice, Kick kick, Cymbal cymbal, HiHat hiHat, Flanger flangerEffect, Snare snare, Echo echoEffect, NoEffect noEffect, RingModulator ringModulatorEffect, Reverb reverbEffect, Distortion distortionEffect) {
+        this.parser = parser;
+        this.writer = writer;
+        this.audioDevice = audioDevice;
+        this.drumloop = drumloop;
+        this.kick = kick;
+        this.cymbal = cymbal;
+        this.hiHat = hiHat;
+        this.snare = snare;
+        this.flangerEffect = flangerEffect;
+        this.echoEffect = echoEffect;
+        this.noEffect = noEffect;
+        this.ringModulatorEffect = ringModulatorEffect;
+        this.reverbEffect = reverbEffect;
+        this.distortionEffect = distortionEffect;
+    }
 
     private void createLoop() {
         if (this.loopTimeline != null) {
@@ -122,7 +127,7 @@ public class Presenter {
 
     @FXML
     protected void initialize() {
-        this.programaticSliderChange = false;
+        this.programmaticSliderChange = false;
         this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
         this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
         this.bpm = new SimpleIntegerProperty();
@@ -146,7 +151,7 @@ public class Presenter {
         this.slider.setLayoutY(40);
         this.slider.setPrefWidth(this.beats*60 - 40);
         this.slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(!programaticSliderChange){
+            if(!programmaticSliderChange){
                 changeHighlighterPosition(newValue.intValue());
             }
         });
@@ -169,7 +174,6 @@ public class Presenter {
             int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
             this.grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
         }
-
         this.grid.setBorder(Border.EMPTY);
     }
 
@@ -195,15 +199,13 @@ public class Presenter {
             this.highlighterPosition = 0;
         }
         this.highLighter.setX(85 + (60*this.highlighterPosition));
-        programaticSliderChange = true;
+        programmaticSliderChange = true;
         this.slider.setValue(this.highlighterPosition);
-        programaticSliderChange = false;
+        programmaticSliderChange = false;
         this.highlighterPosition++;
-
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
-
         if (instrument.getClass().equals(HiHat.class)) {
             this.imageHihat.setDisable(true);
         } else if (instrument.getClass().equals(Snare.class)) {
@@ -225,42 +227,58 @@ public class Presenter {
     private void addInstrumentLine(Instrument instrument) {
         this.highLighter.setHeight(this.highLighter.getHeight()+50);
         disableAddInstrumentButton(instrument);
-        Image image = new Image(instrument.getImage());
         this.grid.addRow(this.gridRow, createLabel(instrument.getClass().getSimpleName()));
 
         for (int i = 0; i < this.beats; i++) {
-            Button button = new Button();
-            ImageView imageView = new ImageView();
-            imageView.setImage(image);
-            imageView.setFitWidth(40);
-            imageView.setFitHeight(40);
-            button.setGraphic(imageView);
             int measureCount = i / 4;
             int beatCount = i % 4;
-
-            ContextMenu effectsMenu = new ContextMenu();
-
-            MenuItem noEffectItem = new MenuItem("No effect");
-            noEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, noEffect));
-
-            MenuItem echoEffectItem = new MenuItem("Echo");
-            echoEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, echoEffect));
-
-            MenuItem reverbEffectItem = new MenuItem("Reverb");
-            reverbEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, reverbEffect));
-
-            effectsMenu.getItems().addAll(noEffectItem, echoEffectItem, reverbEffectItem);
-            button.setContextMenu(effectsMenu);
-
-            button.setOnAction(event -> {
-                instrumentToggle(instrument, measureCount, beatCount);
-            });
-
-            bindBeatToButton(instrument, button, measureCount, beatCount);
-
+            Button button = createToggleInstrumentButton(instrument, measureCount, beatCount);
             this.grid.add(button, i + 1, this.gridRow);
+
+            createEffectsContextMenu(instrument, button, measureCount, beatCount);
         }
         this.gridRow++;
+    }
+
+    private Button createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
+        Button button = new Button();
+        Image image = new Image(instrument.getImage());
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitWidth(40);
+        imageView.setFitHeight(40);
+        button.setGraphic(imageView);
+
+        button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
+
+        bindBeatToButton(instrument, button, measureCount, beatCount);
+
+        return button;
+    }
+
+    private void createEffectsContextMenu(Instrument instrument, Button button, int measureCount, int beatCount) {
+        ContextMenu effectsMenu = new ContextMenu();
+
+        MenuItem noEffectItem = new MenuItem("No effect");
+        noEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, noEffect));
+
+        MenuItem echoEffectItem = new MenuItem("Echo");
+        echoEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, echoEffect));
+
+        MenuItem reverbEffectItem = new MenuItem("Reverb");
+        reverbEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, reverbEffect));
+
+        MenuItem ringModulatorEffectItem = new MenuItem("Ring Modulator");
+        ringModulatorEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, ringModulatorEffect));
+
+        MenuItem flangerEffectItem = new MenuItem("Flanger");
+        flangerEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, flangerEffect));
+
+        MenuItem distortionEffectItem = new MenuItem(("Distortion"));
+        distortionEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, distortionEffect));
+
+        effectsMenu.getItems().addAll(noEffectItem, echoEffectItem, reverbEffectItem, ringModulatorEffectItem, flangerEffectItem, distortionEffectItem);
+        button.setContextMenu(effectsMenu);
     }
 
     private void instrumentAddEffect(Instrument instrument, int measureCount, int beatCount, Effect effect) {
@@ -341,7 +359,6 @@ public class Presenter {
         }
     }
 
-
     public void exit() {
        kick.shutdownExecutor();
        cymbal.shutdownExecutor();
@@ -350,8 +367,6 @@ public class Presenter {
        audioDevice.destroy();
        Platform.exit();
     }
-
-    //UI event handlers
 
     public void imageKickPressed() {
         addInstrumentLine(kick);
