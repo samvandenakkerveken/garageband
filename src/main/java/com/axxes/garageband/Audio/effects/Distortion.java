@@ -15,7 +15,7 @@ public class Distortion extends Effect {
     private void init(){
         this.effect = audioDevice.createEffect(AL_EFFECT_DISTORTION);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
-        alEffectf(effect, AL_DISTORTION_EDGE, 0.8f);
+        alEffectf(effect, AL_DISTORTION_EDGE, 0.6f);
 
     }
 }
